@@ -8,5 +8,5 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     
-    def valid_follower(self):
-        return self.follower.count() >= 0 and self.follower.count() <= User.objects.all().count()
+    def valid_following(self):
+        return self in self.following.all()
