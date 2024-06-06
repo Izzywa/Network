@@ -1,12 +1,25 @@
+from typing import Collection
 from django.contrib.auth.models import AbstractUser
+from django.forms import ValidationError
 from django.db import models
 
 
 class User(AbstractUser):
-    following = models.ManyToManyField("User", related_name="followers", blank=True)
+    pass    
 
     def __str__(self):
         return self.username
     
-    def valid_following(self):
-        return self not in self.following.all()
+class Follows(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
+    
+    class Meta:
+        unique_together = ("follower", "followed")
+        
+    def clean(self):
+        if self.follower == self.followed:
+            raise ValidationError("User cannot follow self")
+        
+    def __str__(self):
+        return f"{self.follower} followed {self.followed}"
