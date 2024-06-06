@@ -51,6 +51,5 @@ class UserTestCase(TestCase):
             x.save()
             self.assertTrue(False, "User can follow self")
         except ValidationError:
-            self.assertTrue(True)
-        
+            self.assertTrue(True)     
         self.assertNotIn(user1, user1_following_list, "User1 can follow self")
