@@ -9,4 +9,4 @@ class User(AbstractUser):
         return self.username
     
     def valid_following(self):
-        return self in self.following.all()
+        return self not in self.following.all()
