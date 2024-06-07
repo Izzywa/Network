@@ -2,19 +2,25 @@ from django.db import IntegrityError
 from django.forms import ValidationError
 from django.test import TestCase
 
-from .models import User, Follows
+from .models import User, Follows, Post, Like
 
 # Create your tests here.
 class UserTestCase(TestCase):
     def setUp(self):
-        #create User
+        # Create User
         user1 = User.objects.create(username="user1", email="user1@example.com", password="12345")
         user2 = User.objects.create(username="user2", email="user2@example.com", password="12345")
         user3 = User.objects.create(username="user3", email="user3@example.com", password="12345")
         
-        #create following
+        # Create following
         f1 = Follows.objects.create(follower=user1, followed=user2)
         f2 = Follows.objects.create(follower=user3, followed=user2)
+        
+        # Create post
+        p1 = Post.objects.create(poster=user1, content="This is user1 first content")
+        
+        # Create likes
+        l1 = Like.objects.create(post=p1, liker=user1)
         
         
     def test_follower(self):
@@ -39,7 +45,8 @@ class UserTestCase(TestCase):
         
         #test if user can follow same user twice
         try:
-            f = Follows.objects.create(follower=user3, followed=user2)
+            f = Follows(follower=user3, followed=user2)
+            f.save()
             self.assertTrue(False, "User could follow the same person more than once")
         except IntegrityError:
             self.assertTrue(True)
@@ -53,3 +60,36 @@ class UserTestCase(TestCase):
         except ValidationError:
             self.assertTrue(True)     
         self.assertNotIn(user1, user1_following_list, "User1 can follow self")
+        
+    def test_post(self):
+        user1 = User.objects.get(username="user1")
+        user2 = User.objects.get(username="user2")
+        user1_first_post = user1.post.first()
+        
+        # Test the number of post
+        self.assertEqual(user1.post.all().count(),1)
+        
+        # Test number of likes
+        self.assertEqual(user1_first_post.like.all().count(),1)
+        
+        # Test if user have liked the post
+        list_of_likes_of_post = [i.liker for i in user1_first_post.like.all()]
+        self.assertIn(user1, list_of_likes_of_post, "User1 should be in the list of the user that liked the post")
+        self.assertNotIn(user2, list_of_likes_of_post, "User2 should not be in the list of uset that liked the post")
+        
+        # Test if user can like the same post twice
+        try:
+            l = Like(post=user1_first_post, liker=user1)
+            l.save()
+            self.assertTrue(False, "User1 should not be able to like the same post")
+        except IntegrityError:
+            self.assertTrue(True)
+            
+            
+    def test_like_toggle(self):
+        user1 = User.objects.get(username="user1")
+        user1_first_post = user1.post.first()
+        # Test like toggle
+        Like.objects.get(post=user1_first_post, liker=user1).delete()
+        self.assertEqual(user1.post.all().count(),1)
+        self.assertEqual(user1_first_post.like.all().count(),0)

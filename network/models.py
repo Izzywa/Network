@@ -23,3 +23,21 @@ class Follows(models.Model):
         
     def __str__(self):
         return f"{self.follower} followed {self.followed}"
+    
+class Post(models.Model):
+    poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post", blank=False)
+    content = models.TextField(blank=False, max_length=400)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.poster} posted on {self.timestamp}"
+    
+class Like(models.Model):
+    post = models.ForeignKey(Post, related_name="like", on_delete=models.CASCADE)
+    liker = models.ForeignKey(User, related_name="liked", on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ("post", "liker")
+        
+    def __str__(self):
+        return f"{self.liker} liked {self.post}"
