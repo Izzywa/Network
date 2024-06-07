@@ -1,6 +1,6 @@
 from django.db import IntegrityError
 from django.forms import ValidationError
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from .models import User, Follows, Post, Like
 
@@ -99,3 +99,17 @@ class UserTestCase(TestCase):
         Like.objects.create(post=user1_first_post, liker=user1)
         self.assertEqual(user1_first_post.like.all().count(),1)
         
+    def test_routes(self):
+        c = Client()
+        
+        # Test index page
+        index = c.get("/")
+        self.assertEqual(index.status_code, 200)
+        
+        # Test login page
+        login = c.get("/login")
+        self.assertEqual(login.status_code, 200)
+        
+        # Test register page
+        register = c.get("/register")
+        self.assertEqual(register.status_code, 200)
