@@ -17,7 +17,8 @@ class UserTestCase(TestCase):
         f2 = Follows.objects.create(follower=user3, followed=user2)
         
         # Create post
-        p1 = Post.objects.create(poster=user1, content="This is user1 first content")
+        p1 = Post.objects.create(poster=user1, content="This is user1 first post")
+        p2 = Post.objects.create(poster=user3, content="This is user3 first post")
         
         # Create likes
         l1 = Like.objects.create(post=p1, liker=user1)
@@ -66,8 +67,11 @@ class UserTestCase(TestCase):
         user2 = User.objects.get(username="user2")
         user1_first_post = user1.post.first()
         
-        # Test the number of post
+        # Test the number of user post
         self.assertEqual(user1.post.all().count(),1)
+        
+        # Test the total number of post
+        self.assertEqual(Post.objects.all().count(),2)
         
         # Test number of likes
         self.assertEqual(user1_first_post.like.all().count(),1)
@@ -91,5 +95,7 @@ class UserTestCase(TestCase):
         user1_first_post = user1.post.first()
         # Test like toggle
         Like.objects.get(post=user1_first_post, liker=user1).delete()
-        self.assertEqual(user1.post.all().count(),1)
         self.assertEqual(user1_first_post.like.all().count(),0)
+        Like.objects.create(post=user1_first_post, liker=user1)
+        self.assertEqual(user1_first_post.like.all().count(),1)
+        
