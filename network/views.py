@@ -1,15 +1,18 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Follows, Post, Like
 
 
 def index(request):
-    return render(request, "network/index.html")
+    if request == 'PUT':
+        pass
+    else:
+        return render(request, "network/index.html") 
 
 
 def login_view(request):
@@ -63,6 +66,13 @@ def register(request):
     else:
         return render(request, "network/register.html")
 
-@login_required
-def following(request):
-    pass
+def posts(request, filter):
+    if filter == "all":
+        posts = Post.objects.all().order_by("-timestamp")
+        
+    elif filter == "following":
+        user = request.user
+        user_following_list = [person.followed for person in user.following.all()]
+        posts = Post.objects.filter(poster__in=user_following_list)
+        
+    return JsonResponse([post.serialize() for post in posts], safe=False)

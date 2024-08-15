@@ -6,7 +6,6 @@ class UserAdmin(admin.ModelAdmin):
     
 class FollowsAdmin(admin.ModelAdmin):
     list_display = ["id", "follower", "followed"]
-    readonly_fields = ["follower", "followed"]
     
 class PostAdmin(admin.ModelAdmin):
     list_display = ["id", "poster", "content"]

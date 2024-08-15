@@ -73,6 +73,9 @@ class UserTestCase(TestCase):
         # Test the total number of post
         self.assertEqual(Post.objects.all().count(),2)
         
+        # Test if follower can see user post
+        
+        
         # Test number of likes
         self.assertEqual(user1_first_post.like.all().count(),1)
         

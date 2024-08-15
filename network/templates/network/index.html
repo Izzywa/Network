@@ -1,11 +1,125 @@
 {% extends "network/layout.html" %}
+{% load static%}
 
 {% block body %}
-    <div id="user-div" class="container my-3">
-        <h1>THE CONTAINER THAT CONTAINS THE USER PROFILE</h1>
+
+    <div id="profile-div" class="container my-3">
     </div>
+
+
+
+<script type="text/babel">
     
-    <div id="post-div" class="container my-3">
-        <h1>THE CONTAINER THAT CONTAINS THE POSTS</h1>
-    </div>
+    function App() {
+        const [username, setUsername] = React.useState({
+            {%if user.is_authenticated%}
+            name: '{{user.username}}',
+            {%else%}
+            name: 'stranger',
+            {%endif%}
+            filter: 'default'
+        
+        });
+
+
+        function changeFilter(event) {
+            console.log(event.target.dataset.filter);
+            setUsername ({
+                ...username,
+                filter: event.target.dataset.filter
+            })
+        }
+
+        return (
+            <>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
+                <a className="navbar-brand" href="#" id="brand">Network</a>
+              
+                <div>
+                  <ul className="navbar-nav mr-auto">
+                    {% if user.is_authenticated %}
+                        <li className="nav-item">
+                            <a className="nav-link" data-filter="{{user.id}}" onClick={changeFilter} id="username">{{ user.username }}</a>
+                        </li>
+                    {% endif %}
+                    <li className="nav-item">
+                      <a className="nav-link" href="{% url 'index' %}" id="all-post">All Posts</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li className="nav-item">
+                            <a className="nav-link" data-filter="following" onClick={changeFilter} href="#" id="following">Following</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="{% url 'logout' %}">Log Out</a>
+                        </li>
+                    {% else %}
+                        <li className="nav-item">
+                            <a className="nav-link" href="{% url 'login' %}">Log In</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="{% url 'register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </nav>
+              <div className="container">
+              <PostList username={username.name} filter={username.filter}/>
+              </div>
+              <LoadPost filter={username.filter} />
+              </>
+        )
+    }
+
+    function PostList(props) {
+        return (<>
+            <h1>HELLO, {props.username}</h1>
+            <p>the filter is {props.filter}</p>
+            </>
+        )
+    }
+
+    function CaseDefault() {
+        return (
+            <p>THIS IS RENDERED WHEN DEFAULT</p>
+        )
+    }
+
+    function CaseFollowing() {
+        return (
+            <div className="container">
+            <p>THIS IS RENDERED WHEN FOLLOWING</p>
+            </div>
+        )
+    }
+
+    function CaseUser() {
+        return (
+            <p>THIS IS RENDERED WHEN USER IS CLICKED</p>
+        )
+    }
+
+    function LoadPost(props) {
+        const Filter = React.useCallback(() => {
+            switch(props.filter) {
+                case 'default':
+                    return <CaseDefault />
+                case 'following':
+                    return <CaseFollowing />
+                default:
+                    return <CaseUser />
+            }
+        });
+
+        return (
+            <>
+            {Filter()}
+            </>
+        )
+    }
+
+    const AppDiv = ReactDOM.createRoot(document.querySelector('#App'));
+    AppDiv.render(<App />);
+
+</script>
 {% endblock %}
