@@ -42,7 +42,7 @@
                         </li>
                     {% endif %}
                     <li className="nav-item">
-                      <a className="nav-link" href="{% url 'index' %}" id="all-post">All Posts</a>
+                      <a className="nav-link" data-filter="all" onClick={changeFilter} id="all-post">All Posts</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li className="nav-item">
@@ -62,9 +62,6 @@
                   </ul>
                 </div>
               </nav>
-              <div className="container">
-              <PostList username={username.name} filter={username.filter}/>
-              </div>
               <LoadPost filter={username.filter} />
               </>
         )
@@ -72,41 +69,85 @@
 
     function PostList(props) {
         return (<>
-            <h1>HELLO, {props.username}</h1>
-            <p>the filter is {props.filter}</p>
+            <h1>{props.filter}</h1>
             </>
         )
     }
 
-    function FetchData(props) {
+    function ShowAlertBox(props) {
+        let type = `alert alert-${props.type}`
+        return(
+            <div className={type} role="alert">
+                {props.message}
+              </div>
+        )
+    }
+
+    function FetchPosts(props) {
         const [data, setData] = React.useState(null);
+        const [status, setStatus] = React.useState(null);
+        const [error, setError] = React.useState(null);
         let url = `posts/${props.url}`
 
         React.useEffect(() => {
             fetch(url)
-            .then(response => response.json())
-            .then(result => setData(result));
-        }, [url]); 
-
-        if (data === 'None') {
-            return (<div className="m-3">
-                <div className="alert alert-info" role="alert">
-                    <h4 className="alert-heading">Nothing to see here</h4>
-                    <p>You are not following anybody right now.</p>
-                    <hr></hr>
-                    <p className="mb-0">How about checking out all posts and follow someone that catch your eye.</p>
-                  </div>
-                </div>
-            )
-        } else {
-            return (
-                <>
-                {
-                    data && data.map((item) => {
-                        return <p key={item.id}>{item.poster} posted {item.content}</p>
-                    })
+            .then(response => {
+                if (response.status === 200){
+                    setStatus('ok')
+                return response.json()
                 }
-                </>
+                else {
+                    setStatus('error')
+                    return response.json().then(text => {
+                        setError(text)
+                    });
+                }
+                
+            })
+            .then(result => setData(result))
+            .catch(error => {
+                alert(error)
+            });
+        }, [url]); 
+        
+        if (status === 'ok') {
+            if (data === 'None') {
+                return (<div className="m-3">
+                    <div className="alert alert-info" role="alert">
+                        <h4 className="alert-heading">Nothing to see here</h4>
+                        <p>You are not following anybody right now.</p>
+                        <hr></hr>
+                        <p className="mb-0">How about checking out all posts and follow someone that catch your eye.</p>
+                      </div>
+                    </div>
+                )
+            } else {
+                return (
+                    <>
+                    {
+                        data && data.map((item) => {
+                            return <div key={item.id}>
+                            <div className="card text-bg-dark mb-3">
+                                <div className="card-header">{item.poster}</div>
+                                <div className="card-body">
+                                  <p className="card-text">{item.content}</p>
+                                  <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                                </div>
+                              </div>
+                            </div>
+                        })
+                    }
+                    </>
+                )
+            }
+
+        } else {
+            console.log(error);
+            return (   
+                <>
+                <ShowAlertBox type={error && error.type} message={error && error.message}/>
+            </>
+
             )
         }
 
@@ -140,22 +181,27 @@
         const Filter = React.useCallback(() => {
             switch(true) {
                 case props.filter === 'all':
-                    return <FetchData url={props.filter}/>
+                    return <>
+                    <PostList filter={props.filter.toUpperCase()} />
+                    <FetchPosts url={props.filter}/>
+                    </>
                 case props.filter === 'following':
                     return <>
-                    <FetchData url={props.filter} />
+                    <PostList filter={props.filter.toUpperCase()} />
+                    <FetchPosts url={props.filter} />
                     </>
                 default:
                     return <>
-                    <FetchData url={props.filter} />
+                    <PostList filter={props.filter} />
+                    <FetchPosts url={props.filter} />
                     </>
             }
         });
 
         return (
-            <>
+            <div className="container">
             {Filter()}
-            </>
+            </div>
         )
     }
 

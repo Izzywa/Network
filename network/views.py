@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -78,13 +79,14 @@ def posts(request, filter):
         
     else:
         try:
-            user = User.objects.get(username=filter)
+            username = User.objects.get(username=filter)
         except User.DoesNotExist:
             return JsonResponse({
-                "error": "User does not exist"
+                "type": "warning",
+                "message": "User does not exist"
             }, status=400)
         
-        posts = Post.objects.filter(poster=user).order_by("-timestamp")
+        posts = Post.objects.filter(poster=username).order_by("-timestamp")
 
     if len(posts) == 0:
         return JsonResponse('None', safe=False)
