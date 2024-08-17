@@ -11,21 +11,17 @@
 <script type="text/babel">
     
     function App() {
-        const [username, setUsername] = React.useState({
-            {%if user.is_authenticated%}
-            name: '{{user.username}}',
-            {%else%}
-            name: 'stranger',
-            {%endif%}
-            filter: 'all'
+        const [page, setPage] = React.useState({
+            filter: 'all',
+            page: 1
         
         });
 
 
         function changeFilter(event) {
-            setUsername ({
-                ...username,
-                filter: event.target.dataset.filter
+            setPage ({
+                filter: event.target.dataset.filter,
+                page: event.target.dataset.page
             })
         }
 
@@ -38,15 +34,15 @@
                   <ul className="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
                         <li className="nav-item">
-                            <a className="nav-link" data-filter="{{user.username}}" onClick={changeFilter} id="username">{{ user.username }}</a>
+                            <a className="nav-link" data-filter="{{user.username}}" data-page="1" onClick={changeFilter} id="username">{{ user.username }}</a>
                         </li>
                     {% endif %}
                     <li className="nav-item">
-                      <a className="nav-link" data-filter="all" onClick={changeFilter} id="all-post">All Posts</a>
+                      <a className="nav-link" data-filter="all" onClick={changeFilter} id="all-post" data-page="1">All Posts</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li className="nav-item">
-                            <a className="nav-link" data-filter="following" onClick={changeFilter} id="following">Following</a>
+                            <a className="nav-link" data-filter="following" onClick={changeFilter} data-page="1" id="following">Following</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -62,7 +58,7 @@
                   </ul>
                 </div>
               </nav>
-              <LoadPost filter={username.filter} />
+              <LoadPost filter={page.filter} page={page.page}/>
               </>
         )
     }
@@ -98,8 +94,8 @@
                 }
                 else {
                     setStatus('error')
-                    return response.json().then(text => {
-                        setError(text)
+                    return response.json().then(result => {
+                        setError(result)
                     });
                 }
                 
@@ -111,13 +107,23 @@
         }, [url]); 
         
         if (status === 'ok') {
-            if (data === 'None') {
+            if (data === 'None' && props.url === 'following') {
                 return (<div className="m-3">
                     <div className="alert alert-info" role="alert">
                         <h4 className="alert-heading">Nothing to see here</h4>
                         <p>You are not following anybody right now.</p>
                         <hr></hr>
                         <p className="mb-0">How about checking out all posts and follow someone that catch your eye.</p>
+                      </div>
+                    </div>
+                )
+            } else if (data === 'None' && props.url !== 'following') {
+                return (<div className="m-3">
+                    <div className="alert alert-info" role="alert">
+                        <h4 className="alert-heading">Nothing to see here</h4>
+                        <p>You have not made any post</p>
+                        <hr></hr>
+                        <p className="mb-0">Come on, give it a try. Post your thoughts.</p>
                       </div>
                     </div>
                 )
