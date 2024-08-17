@@ -17,13 +17,12 @@
             {%else%}
             name: 'stranger',
             {%endif%}
-            filter: 'default'
+            filter: 'all'
         
         });
 
 
         function changeFilter(event) {
-            console.log(event.target.dataset.filter);
             setUsername ({
                 ...username,
                 filter: event.target.dataset.filter
@@ -39,7 +38,7 @@
                   <ul className="navbar-nav mr-auto">
                     {% if user.is_authenticated %}
                         <li className="nav-item">
-                            <a className="nav-link" data-filter="{{user.id}}" onClick={changeFilter} id="username">{{ user.username }}</a>
+                            <a className="nav-link" data-filter="{{user.username}}" onClick={changeFilter} id="username">{{ user.username }}</a>
                         </li>
                     {% endif %}
                     <li className="nav-item">
@@ -47,7 +46,7 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li className="nav-item">
-                            <a className="nav-link" data-filter="following" onClick={changeFilter} href="#" id="following">Following</a>
+                            <a className="nav-link" data-filter="following" onClick={changeFilter} id="following">Following</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -79,7 +78,44 @@
         )
     }
 
+    function FetchData(props) {
+        const [data, setData] = React.useState(null);
+        let url = `posts/${props.url}`
+
+        React.useEffect(() => {
+            fetch(url)
+            .then(response => response.json())
+            .then(result => setData(result));
+        }, [url]); 
+
+        if (data === 'None') {
+            return (<div className="m-3">
+                <div className="alert alert-info" role="alert">
+                    <h4 className="alert-heading">Nothing to see here</h4>
+                    <p>You are not following anybody right now.</p>
+                    <hr></hr>
+                    <p className="mb-0">How about checking out all posts and follow someone that catch your eye.</p>
+                  </div>
+                </div>
+            )
+        } else {
+            return (
+                <>
+                {
+                    data && data.map((item) => {
+                        return <p key={item.id}>{item.poster} posted {item.content}</p>
+                    })
+                }
+                </>
+            )
+        }
+
+        
+    }
+
+
     function CaseDefault() {
+        console.log('default')
         return (
             <p>THIS IS RENDERED WHEN DEFAULT</p>
         )
@@ -93,21 +129,26 @@
         )
     }
 
-    function CaseUser() {
-        return (
+    function CaseUser(props) {
+        return (<>
             <p>THIS IS RENDERED WHEN USER IS CLICKED</p>
+            </>
         )
     }
 
     function LoadPost(props) {
         const Filter = React.useCallback(() => {
-            switch(props.filter) {
-                case 'default':
-                    return <CaseDefault />
-                case 'following':
-                    return <CaseFollowing />
+            switch(true) {
+                case props.filter === 'all':
+                    return <FetchData url={props.filter}/>
+                case props.filter === 'following':
+                    return <>
+                    <FetchData url={props.filter} />
+                    </>
                 default:
-                    return <CaseUser />
+                    return <>
+                    <FetchData url={props.filter} />
+                    </>
             }
         });
 

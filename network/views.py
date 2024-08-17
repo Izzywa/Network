@@ -73,6 +73,20 @@ def posts(request, filter):
     elif filter == "following":
         user = request.user
         user_following_list = [person.followed for person in user.following.all()]
-        posts = Post.objects.filter(poster__in=user_following_list)
+        posts = Post.objects.filter(poster__in=user_following_list).order_by("-timestamp")
+        """filter by reverse chronological order"""
         
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+    else:
+        try:
+            user = User.objects.get(username=filter)
+        except User.DoesNotExist:
+            return JsonResponse({
+                "error": "User does not exist"
+            }, status=400)
+        
+        posts = Post.objects.filter(poster=user).order_by("-timestamp")
+
+    if len(posts) == 0:
+        return JsonResponse('None', safe=False)
+    else:
+        return JsonResponse([post.serialize() for post in posts], safe=False)
