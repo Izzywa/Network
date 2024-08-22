@@ -66,32 +66,6 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
-
-def posts(request, filter):
-    if filter == "all":
-        posts = Post.objects.all().order_by("-timestamp")
-        
-    elif filter == "following":
-        user = request.user
-        user_following_list = [person.followed for person in user.following.all()]
-        posts = Post.objects.filter(poster__in=user_following_list).order_by("-timestamp")
-        """filter by reverse chronological order"""
-        
-    else:
-        try:
-            username = User.objects.get(username=filter)
-        except User.DoesNotExist:
-            return JsonResponse({
-                "type": "warning",
-                "message": "User does not exist"
-            }, status=400)
-        
-        posts = Post.objects.filter(poster=username).order_by("-timestamp")
-
-    if len(posts) == 0:
-        return JsonResponse('None', safe=False)
-    else:
-        return JsonResponse([post.serialize() for post in posts], safe=False)
     
 def page(request, filter, num):
     if filter == "all":

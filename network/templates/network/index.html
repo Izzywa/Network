@@ -11,16 +11,16 @@
     
     function App() {
         const [page, setPage] = React.useState({
-            filter: 'all',
-            page: 1
+            'filter': 'all',
+            'page': 1
         
         });
 
 
         function changeFilter(event) {
             setPage ({
-                filter: event.target.dataset.filter,
-                page: event.target.dataset.page
+                'filter': event.currentTarget.dataset.filter,
+                'page': event.currentTarget.dataset.page
             })
         }
 
@@ -57,7 +57,7 @@
                   </ul>
                 </div>
               </nav>
-              <LoadPost filter={page.filter} page={page.page}/>
+              <LoadPost filter={page.filter} page={page.page} changePage={setPage}/>
               </>
         )
     }
@@ -70,7 +70,7 @@
     }
 
     function ShowAlertBox(props) {
-        let type = `alert alert-${props.type}`
+        let type = `alert alert-${props.type} text-center py-5`
         return(
             <div className={type} role="alert">
                 {props.message}
@@ -101,7 +101,7 @@
         )
     }
 
-    function FetchPage(props) {
+    const UseFetchPage =(url) => {
         const [pageList, setPageList] = React.useState({
             'pagination': {},
             'error_content': null,
@@ -109,7 +109,6 @@
             'error': false,
             'empty': false
         });
-        let url = `page/${props.filter}/${props.page}`
 
         React.useEffect(() => {
             fetch(url)
@@ -152,11 +151,31 @@
                     });
                 }
                 else {
+                    console.log(url);
                     alert('bad request');
+                    setPageList({
+                        ...pageList,
+                        'pagination': null,
+                        'object_list': null,
+                        'empty': true,
+                        'error_content':{
+                            'type': 'danger',
+                            'message': 'BAD REQUEST'
+                        },
+                        'error': true
+                    })
                 }
                 
             })
-        }, [url]); 
+        }, [url]);
+
+        return pageList;
+
+    }
+
+    function FetchPage(props) {
+        let url = `page/${props.filter}/${props.page}`
+        const pageList = UseFetchPage(url);
 
         if (pageList.error) {
             return (   
@@ -185,14 +204,20 @@
                         </div>
                     })
                 }
-                < Pagination pagination={pageList.pagination} currentPage={props.page}/>
+                < Pagination pagination={pageList.pagination} currentPage={props.page} changePage={props.changePage} filter={props.filter}/>
                 </>
             )
-        }
+        } 
         
     }
 
     function Pagination(props) {
+        function pageChanger(event) {
+            props.changePage({
+                'filter': props.filter,
+                'page': event.currentTarget.dataset.page
+            })
+        }
         function PageNumber() {
             let list = Array(props.pagination.num_pages).fill().map((_, index) => index + 1);
             return (
@@ -207,7 +232,7 @@
                                 </span>
                               </li>)
                         } else {
-                            return <li key={item} className="page-item"><a className="page-link">{item}</a></li>
+                            return <li key={item} className="page-item" data-page={item} onClick={pageChanger}><a className="page-link">{item}</a></li>
                         }
                     })
                 }
@@ -215,11 +240,10 @@
             )
 
         }
+        console.log(props.currentPage)
     
         return (
             <>
-            <p>total page = {props.pagination.num_pages}</p>
-            <p>current page = {props.currentPage} </p>
             <nav aria-label="...">
                 <ul className="pagination">
                   <li className={props.pagination.has_previous ? "page-item":"page-item disabled"}>
@@ -239,14 +263,15 @@
         const Filter = React.useCallback(() => {
             switch(true) {
                 case props.filter === 'all' || props.filter === 'following':
+                console.log('switch')
                     return <>
                     <PostList filter={props.filter.toUpperCase()} />
-                    <FetchPage filter={props.filter} page={props.page} page={props.page}/>
+                    <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
                     </>
                 default:
                     return <>
                     <PostList filter={props.filter} />
-                    <FetchPage filter={props.filter} page={props.page} page={props.page}/>
+                    <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
                     </>
             }
         });
