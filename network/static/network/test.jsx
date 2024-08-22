@@ -134,3 +134,68 @@ let x;
     post.render(<GetData />);
     profile.render(<Component1 />);
     test.render(<Component2 />);
+
+    function FetchPosts(props) {
+        const [data, setData] = React.useState(null);
+        const [status, setStatus] = React.useState(null);
+        const [error, setError] = React.useState(null);
+        let url = `posts/${props.url}`
+
+        React.useEffect(() => {
+            fetch(url)
+            .then(response => {
+                if (response.status === 200){
+                    setStatus('ok')
+                return response.json()
+                }
+                else {
+                    setStatus('error')
+                    return response.json().then(result => {
+                        setError(result);
+                    });
+                }
+                
+            })
+            .then(result => setData(result))
+            .catch(error => {
+                alert(error)
+            });
+        }, [props.url]); 
+        
+        if (status === 'ok') {
+            if (data === 'None' && props.url === 'following') {
+                return (<EmptyPost filter={props.url}/>)
+            } else if (data === 'None' && props.url !== 'following') {
+                return (<EmptyPost filter={props.url}/>
+                )
+            } else {
+                return (
+                    <>
+                    {
+                        data && data.map((item) => {
+                            return <div key={item.id}>
+                            <div className="card text-bg-dark mb-3">
+                                <div className="card-header">{item.poster}</div>
+                                <div className="card-body">
+                                  <p className="card-text">{item.content}</p>
+                                  <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                                </div>
+                              </div>
+                            </div>
+                        })
+                    }
+                    </>
+                )
+            }
+
+        } else {
+            return (   
+                <>
+                <ShowAlertBox type={error && error.type} message={error && error.message}/>
+            </>
+
+            )
+        }
+
+        
+    }

@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -115,7 +115,15 @@ def page(request, filter, num):
         return JsonResponse('None', safe=False)
         
     page_list = Paginator(posts,2)
-    this_page = page_list.page(num)
+    try:
+        this_page = page_list.page(num)
+    except PageNotAnInteger:
+        this_page = page_list.page(1)
+    except EmptyPage:
+        return JsonResponse({
+            "type": "warning",
+            "message": "This page does not exist"
+        }, status=400)
     
     return JsonResponse({
         "num_pages": page_list.num_pages,
