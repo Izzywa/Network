@@ -95,7 +95,7 @@
                 else {
                     setStatus('error')
                     return response.json().then(result => {
-                        setError(result)
+                        setError(result);
                     });
                 }
                 
@@ -104,28 +104,13 @@
             .catch(error => {
                 alert(error)
             });
-        }, [url]); 
+        }, [props.url]); 
         
         if (status === 'ok') {
             if (data === 'None' && props.url === 'following') {
-                return (<div className="m-3">
-                    <div className="alert alert-info" role="alert">
-                        <h4 className="alert-heading">Nothing to see here</h4>
-                        <p>You are not following anybody right now.</p>
-                        <hr></hr>
-                        <p className="mb-0">How about checking out all posts and follow someone that catch your eye.</p>
-                      </div>
-                    </div>
-                )
+                return (<EmptyPost filter={props.url}/>)
             } else if (data === 'None' && props.url !== 'following') {
-                return (<div className="m-3">
-                    <div className="alert alert-info" role="alert">
-                        <h4 className="alert-heading">Nothing to see here</h4>
-                        <p>You have not made any post</p>
-                        <hr></hr>
-                        <p className="mb-0">Come on, give it a try. Post your thoughts.</p>
-                      </div>
-                    </div>
+                return (<EmptyPost filter={props.url}/>
                 )
             } else {
                 return (
@@ -148,7 +133,6 @@
             }
 
         } else {
-            console.log(error);
             return (   
                 <>
                 <ShowAlertBox type={error && error.type} message={error && error.message}/>
@@ -160,46 +144,180 @@
         
     }
 
-
-    function CaseDefault() {
-        console.log('default')
-        return (
-            <p>THIS IS RENDERED WHEN DEFAULT</p>
-        )
-    }
-
-    function CaseFollowing() {
-        return (
-            <div className="container">
-            <p>THIS IS RENDERED WHEN FOLLOWING</p>
+    function EmptyPost(props) {
+        const empty_page_content = {
+            'heading': 'Nothing to see here.',
+            'following':{
+                'first_line': 'You are not following anybody right now.',
+                'second_line': 'How about checking out all posts and follow someone that catch your eye.'
+            },
+            'user': {
+                'first_line': 'You have not made any post',
+                'second_line': 'Click the new post to make one.'
+            }
+        }
+        return (<div className="m-3">
+            <div className="alert alert-info" role="alert">
+                <h4 className="alert-heading">{empty_page_content.heading}</h4>
+                <p>{props.filter === 'following' ? empty_page_content.following.first_line : empty_page_content.user.first_line}</p>
+                <hr></hr>
+                <p className="mb-0">{props.filter === 'following' ? empty_page_content.following.second_line : empty_page_content.user.second_line}</p>
+              </div>
             </div>
         )
     }
 
-    function CaseUser(props) {
-        return (<>
-            <p>THIS IS RENDERED WHEN USER IS CLICKED</p>
+    function FetchPage(props) {
+        const [pageList, setPageList] = React.useState({
+            'pagination': {},
+            'error_content': null,
+            'object_list': null,
+            'error': false,
+            'empty': false
+        });
+        let url = `page/${props.filter}/${props.page}`
+
+        React.useEffect(() => {
+            fetch(url)
+            .then(response => {
+                if (response.status === 200){
+                    setPageList({
+                        ...pageList,
+                        'error': false
+                    })
+                return response.json().then(result => {
+                    console.log(pageList.error)
+                    if (result === 'None') {
+                        setPageList({
+                            'pagination': null,
+                            'object_list': null,
+                            'empty': true,
+                            'error': false,
+                            'error_content': null
+                        })
+                    }
+                    else{
+                        setPageList({
+                            'pagination': result,
+                            'object_list': result.object_list,
+                            'empty': false,
+                            'error': false,
+                            'error_content': null
+                        })
+                    }
+                })
+                .catch(error => {
+                    alert(error)
+                });
+                }
+                else {
+                    return response.json().then(result => {
+                        setPageList({
+                            ...pageList,
+                            'pagination': null,
+                            'object_list': null,
+                            'empty': true,
+                            'error_content': result,
+                            'error': true
+                        })
+                        console.log(pageList.error)
+                    });
+                }
+                
+            })
+        }, [url]); 
+
+        if (pageList.error) {
+            return (   
+                <>
+                <ShowAlertBox type={pageList.error_content && pageList.error_content.type} message={pageList.error_content && pageList.error_content.message}/>
+            </>
+            )
+        }
+        else {
+            if (pageList.empty) {
+                return (
+                    <EmptyPost filter={props.filter} />
+                )
+            }
+            return (<>
+                {
+                    pageList.object_list && pageList.object_list.map((item) => {
+                        return <div key={item.id}>
+                        <div className="card text-bg-dark mb-3">
+                            <div className="card-header">{item.poster}</div>
+                            <div className="card-body">
+                              <p className="card-text">{item.content}</p>
+                              <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                            </div>
+                          </div>
+                        </div>
+                    })
+                }
+                < Pagination pagination={pageList.pagination} currentPage={props.page}/>
+                </>
+            )
+        }
+        
+    }
+
+    function Pagination(props) {
+        function PageNumber() {
+            let list = Array(props.pagination.num_pages).fill().map((_, index) => index + 1);
+            return (
+                <>
+                {
+                    list && list.map((item) => {
+                        if (item == props.currentPage) {
+                            return( <li key ={item} className="page-item active" aria-current="page">
+                                <span className="page-link">
+                                  {item}
+                                  <span className="sr-only">(current)</span>
+                                </span>
+                              </li>)
+                        } else {
+                            return <li key={item} className="page-item"><a className="page-link">{item}</a></li>
+                        }
+                    })
+                }
+                </>
+            )
+
+        }
+    
+        return (
+            <>
+            <p>total page = {props.pagination.num_pages}</p>
+            <p>current page = {props.currentPage} </p>
+            <nav aria-label="...">
+                <ul className="pagination">
+                  <li className={props.pagination.has_previous ? "page-item":"page-item disabled"}>
+                    <a className="page-link">Previous</a>
+                  </li>
+                  < PageNumber />
+                  <li className={props.pagination.has_next ? "page-item":"page-item disabled"}>
+                    <a className="page-link">Next</a>
+                  </li>
+                </ul>
+              </nav>
             </>
         )
     }
 
+
+
     function LoadPost(props) {
         const Filter = React.useCallback(() => {
             switch(true) {
-                case props.filter === 'all':
+                case props.filter === 'all' || props.filter === 'following':
                     return <>
                     <PostList filter={props.filter.toUpperCase()} />
-                    <FetchPosts url={props.filter}/>
-                    </>
-                case props.filter === 'following':
-                    return <>
-                    <PostList filter={props.filter.toUpperCase()} />
-                    <FetchPosts url={props.filter} />
+                    <FetchPage filter={props.filter} page={props.page} page={props.page}/>
                     </>
                 default:
                     return <>
                     <PostList filter={props.filter} />
-                    <FetchPosts url={props.filter} />
+                    <FetchPage filter={props.filter} page={props.page} page={props.page}/>
                     </>
             }
         });

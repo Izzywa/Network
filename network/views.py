@@ -92,3 +92,34 @@ def posts(request, filter):
         return JsonResponse('None', safe=False)
     else:
         return JsonResponse([post.serialize() for post in posts], safe=False)
+    
+def page(request, filter, num):
+    if filter == "all":
+        posts = Post.objects.all().order_by("-timestamp")
+    elif filter == "following":
+        user = request.user
+        user_following_list = [person.followed for person in user.following.all()]
+        posts = Post.objects.filter(poster__in=user_following_list).order_by("-timestamp")
+    else:
+        try:
+            username = User.objects.get(username=filter)
+        except User.DoesNotExist:
+            return JsonResponse({
+                "type": "warning",
+                "message": "User does not exist"
+            }, status=400)
+        
+        posts = Post.objects.filter(poster=username).order_by("-timestamp")
+        
+    if len(posts) == 0:
+        return JsonResponse('None', safe=False)
+        
+    page_list = Paginator(posts,2)
+    this_page = page_list.page(num)
+    
+    return JsonResponse({
+        "num_pages": page_list.num_pages,
+        "object_list": [p.serialize() for p in this_page.object_list],
+        "has_next": this_page.has_next(),
+        "has_previous": this_page.has_previous()
+        }, safe=False)
