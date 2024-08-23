@@ -1,3 +1,63 @@
-#username {
-    font-weight: bold;
+#new-post-btn {
+  border: none;
+  border-radius: 25px;
+  height: 2em;
+  width: 10em;
+  position: relative;
+  z-index: 1;
+  margin: 3px;
+  transition: 0.4s;
+  background-color: whitesmoke;
+  color: black;
 }
+
+.nav-link span.hover, #new-post-btn:hover {
+  background-color: black;
+  color: whitesmoke;
+}
+
+.brand, #new-post-btn {
+  justify-content: center;
+  align-items: center;
+}
+
+#username {
+  font-weight: bold;
+}
+
+.nav-link span {
+  color: black;
+  transition: 0.3s;
+}
+.nav-link span.active {
+  color: blue;
+}
+
+.brand {
+  border-radius: 25px;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+.brand::before {
+  content: "";
+  display: block;
+  height: 50%;
+  width: 110%;
+  background-color: blue;
+  position: absolute;
+  z-index: 0;
+  animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */

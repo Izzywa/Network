@@ -1,0 +1,76 @@
+%buttons {
+  border: none;
+  border-radius: 25px;
+  height: 2em;
+  width: 10em;
+  position: relative;
+  z-index: 1;
+  margin: 3px;
+  transition: 0.4s;
+  background-color: whitesmoke;
+  color: black;
+}
+
+%buttons-hover {
+background-color: black;
+color: whitesmoke
+}
+
+%center {
+    justify-content: center;
+    align-items: center;
+}
+
+#username {
+    font-weight: bold;
+}
+
+#new-post-btn {
+    @extend %buttons;
+    @extend %center;
+    
+}
+#new-post-btn:hover{
+    @extend %buttons-hover
+}
+
+.nav-link span {
+    color: black;
+    transition: 0.3s;
+    &.active {
+        color: blue;
+    }
+    
+}
+
+.nav-link span.hover {
+    @extend %buttons-hover;
+}
+
+.brand {
+    border-radius: 25px;
+    position: relative;
+    display: flex;
+    @extend %center;
+    overflow: hidden;
+}
+
+.brand::before {
+    content: '';
+    display: block;
+    height: 50%;
+    width: 110%;
+    background-color: blue;
+    position: absolute;
+    z-index: 0;
+    animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
