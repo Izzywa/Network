@@ -14,7 +14,7 @@
 
 %big-font {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: bold;
 }
 
@@ -98,6 +98,9 @@ letter-spacing: 2px;
     border: none;
     }
 }
+.title span {
+    word-wrap: break-word;
+}
 
 body {
     background-color: black;
@@ -118,8 +121,4 @@ body {
 .page-item{
     font-family: 'Courier New', Courier, monospace;
     color: black;
-    transition: 0.2s;
-}
-.page-item:hover {
-    letter-spacing: 2px;
 }
