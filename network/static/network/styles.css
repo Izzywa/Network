@@ -9,14 +9,25 @@
   transition: 0.4s;
   background-color: whitesmoke;
   color: black;
+  outline: none;
 }
 
-.nav-link span.hover, #new-post-btn:hover {
+.title span {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 5em;
+  font-weight: bold;
+}
+
+*:focus {
+  outline: none;
+}
+
+#new-post-btn:hover {
   background-color: black;
   color: whitesmoke;
 }
 
-.brand, #new-post-btn {
+.title, .brand, #new-post-btn {
   justify-content: center;
   align-items: center;
 }
@@ -30,6 +41,10 @@
   transition: 0.3s;
 }
 .nav-link span.active {
+  color: blue;
+}
+
+.nav-link span:hover {
   color: blue;
 }
 
@@ -58,6 +73,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+.title {
+  display: flex;
+}
+.title span {
+  border: none;
 }
 
 /*# sourceMappingURL=styles.css.map */

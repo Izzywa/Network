@@ -15,7 +15,9 @@
     <body>
         <div id="App">
         <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
-            <a class="navbar-brand" href="#" id="brand">Network</a>
+            <div class="brand">
+                <button id="new-post-btn" disabled><i class="fa-sharp fa-solid fa-pen-fancy" id="pen-icon"> Network</i></button>
+            </div>
           
             <div>
               <ul class="navbar-nav mr-auto">
@@ -25,7 +27,7 @@
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'index' %}" id="all-post">All Posts</a>
+                  <a class="nav-link" href="{% url 'index' %}" id="all-post"><span>All Posts</span></a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">

@@ -9,6 +9,17 @@
   transition: 0.4s;
   background-color: whitesmoke;
   color: black;
+  outline: none;
+}
+
+%big-font {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 5em;
+    font-weight: bold;
+}
+
+*:focus {
+    outline: none;
 }
 
 %buttons-hover {
@@ -43,8 +54,8 @@ color: whitesmoke
     
 }
 
-.nav-link span.hover {
-    @extend %buttons-hover;
+.nav-link span:hover {
+    color:blue;
 }
 
 .brand {
@@ -74,3 +85,13 @@ color: whitesmoke
         transform: rotate(360deg);
     }
 }
+
+.title{
+    @extend %center;
+    display: flex;
+    span{
+    @extend %big-font;
+    border: none;
+    }
+}
+

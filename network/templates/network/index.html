@@ -3,10 +3,6 @@
 
 {% block body %}
 
-    <div id="profile-div" class="container my-3">
-    </div>
-
-
 <script type="text/babel" src="{% static 'network/new-post.js' %}"></script>
 
 <script type="text/babel">
@@ -36,7 +32,9 @@
                 </li>
             )
         }
+        {% if user.is_authenticated %}
         let username = `{{user.username}}`;
+        {% endif %}
 
         return (
             <>
@@ -72,11 +70,22 @@
     }
 
 
-    function PostList(props) {
-        return (<>
-            <h1>{props.filter}</h1>
+    function PostTitle(props) {
+        if (props.filter === 'all') {
+            return (<>
+        <div className="title">
+            <span>ALL POSTS</span>
+        </div>
             </>
         )
+        } else {
+            return (<>
+            <div className="title">
+                <span>{props.filter}</span>
+            </div>
+                </>
+            )
+        }
     }
 
     function ShowAlertBox(props) {
@@ -270,14 +279,14 @@
     function LoadPost(props) {
         const Filter = React.useCallback(() => {
             switch(true) {
-                case props.filter === 'all' || props.filter === 'following':
+                case props.filter === 'following':
                     return <>
-                    <PostList filter={props.filter.toUpperCase()} />
+                    <PostTitle filter={props.filter.toUpperCase()} />
                     <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
                     </>
                 default:
                     return <>
-                    <PostList filter={props.filter} />
+                    <PostTitle filter={props.filter} />
                     <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
                     </>
             }
