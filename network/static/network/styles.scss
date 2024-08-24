@@ -14,7 +14,7 @@
 
 %big-font {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 5em;
+    font-size: 3em;
     font-weight: bold;
 }
 
@@ -24,7 +24,8 @@
 
 %buttons-hover {
 background-color: black;
-color: whitesmoke
+color: whitesmoke;
+letter-spacing: 2px;
 }
 
 %center {
@@ -48,6 +49,8 @@ color: whitesmoke
 .nav-link span {
     color: black;
     transition: 0.3s;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
     &.active {
         color: blue;
     }
@@ -56,6 +59,7 @@ color: whitesmoke
 
 .nav-link span:hover {
     color:blue;
+    letter-spacing: 2px;
 }
 
 .brand {
@@ -95,3 +99,27 @@ color: whitesmoke
     }
 }
 
+body {
+    background-color: black;
+    min-height: 100vh;
+    color: whitesmoke;
+}
+
+.submit-btn {
+    @extend %buttons;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+}
+
+.card {
+    color:black;
+}
+
+.page-item{
+    font-family: 'Courier New', Courier, monospace;
+    color: black;
+    transition: 0.2s;
+}
+.page-item:hover {
+    letter-spacing: 2px;
+}

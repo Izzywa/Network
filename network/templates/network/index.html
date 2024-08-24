@@ -71,21 +71,12 @@
 
 
     function PostTitle(props) {
-        if (props.filter === 'all') {
-            return (<>
+        return (<>
         <div className="title">
-            <span>ALL POSTS</span>
+            <span>{props.filter === 'all' ? 'ALL POSTS':props.filter}</span>
         </div>
             </>
         )
-        } else {
-            return (<>
-            <div className="title">
-                <span>{props.filter}</span>
-            </div>
-                </>
-            )
-        }
     }
 
     function ShowAlertBox(props) {
@@ -245,12 +236,12 @@
                         if (item == props.currentPage) {
                             return( <li key ={item} className="page-item active" aria-current="page">
                                 <span className="page-link">
-                                  {item}
+                                  <span>{item}</span>
                                   <span className="sr-only">(current)</span>
                                 </span>
                               </li>)
                         } else {
-                            return <li key={item} className="page-item" data-page={item} onClick={pageChanger}><a className="page-link">{item}</a></li>
+                            return <li key={item} className="page-item" data-page={item} onClick={pageChanger}><a className="page-link"><span>{item}</span></a></li>
                         }
                     })
                 }
@@ -263,12 +254,16 @@
             <>
             <nav aria-label="...">
                 <ul className="pagination">
-                  <li className={props.pagination.has_previous ? "page-item":"page-item disabled"}>
-                    <a className="page-link" data-page={props.pagination.has_previous ? (parseInt(props.currentPage) - 1):1} onClick={pageChanger}>Previous</a>
+                  <li className="page-item">
+                    <a className="page-link" data-page={props.pagination.has_previous ? (parseInt(props.currentPage) - 1):1} onClick={pageChanger}>
+                        <span className={props.pagination.has_previous ? "":"disabled"}>Previous</span>
+                        </a>
                   </li>
                   < PageNumber />
                   <li className={props.pagination.has_next ? "page-item":"page-item disabled"}>
-                    <a className="page-link" data-page={props.pagination.has_next ? (parseInt(props.currentPage) + 1):props.pagination.num_pages} onClick={pageChanger}>Next</a>
+                    <a className="page-link" data-page={props.pagination.has_next ? (parseInt(props.currentPage) + 1):props.pagination.num_pages} onClick={pageChanger}>
+                        <span>Next</span>
+                        </a>
                   </li>
                 </ul>
               </nav>

@@ -1,8 +1,9 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
+<div class="container py-5">
 
-    <h2>Register</h2>
+    <div class="title"><span>Register</span></div>
 
     {% if message %}
         <div>{{ message }}</div>
@@ -22,9 +23,10 @@
         <div class="form-group">
             <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
         </div>
-        <input class="btn btn-primary" type="submit" value="Register">
+        <input class="btn submit-btn" type="submit" value="Register">
     </form>
 
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+    Already have an account? <a href="{% url 'login' %}" >Log In here.</a>
+</div>
 
 {% endblock %}

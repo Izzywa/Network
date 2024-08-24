@@ -1,4 +1,4 @@
-#new-post-btn {
+.submit-btn, #new-post-btn {
   border: none;
   border-radius: 25px;
   height: 2em;
@@ -14,7 +14,7 @@
 
 .title span {
   font-family: "Courier New", Courier, monospace;
-  font-size: 5em;
+  font-size: 3em;
   font-weight: bold;
 }
 
@@ -25,6 +25,7 @@
 #new-post-btn:hover {
   background-color: black;
   color: whitesmoke;
+  letter-spacing: 2px;
 }
 
 .title, .brand, #new-post-btn {
@@ -39,6 +40,8 @@
 .nav-link span {
   color: black;
   transition: 0.3s;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
 }
 .nav-link span.active {
   color: blue;
@@ -46,6 +49,7 @@
 
 .nav-link span:hover {
   color: blue;
+  letter-spacing: 2px;
 }
 
 .brand {
@@ -79,6 +83,31 @@
 }
 .title span {
   border: none;
+}
+
+body {
+  background-color: black;
+  min-height: 100vh;
+  color: whitesmoke;
+}
+
+.submit-btn {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+
+.card {
+  color: black;
+}
+
+.page-item {
+  font-family: "Courier New", Courier, monospace;
+  color: black;
+  transition: 0.2s;
+}
+
+.page-item:hover {
+  letter-spacing: 2px;
 }
 
 /*# sourceMappingURL=styles.css.map */
