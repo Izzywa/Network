@@ -28,13 +28,13 @@
   letter-spacing: 2px;
 }
 
-.title, .brand, #new-post-btn {
+#new-post-div, .title, .brand, #new-post-btn {
   justify-content: center;
   align-items: center;
 }
 
-#username {
-  font-weight: bold;
+#username span {
+  border-bottom: 2px solid blue;
 }
 
 .nav-link span {
@@ -82,10 +82,6 @@
   display: flex;
 }
 .title span {
-  border: none;
-}
-
-.title span {
   word-wrap: break-word;
 }
 
@@ -104,9 +100,51 @@ body {
   color: black;
 }
 
-.page-item {
+li.page-item {
   font-family: "Courier New", Courier, monospace;
   color: black;
+}
+li.page-item.active {
+  background-color: blue;
+}
+
+#new-post-div {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  z-index: 3;
+  transition: width 0.5s linear;
+  width: 100vw;
+  padding-top: 5em;
+  display: none;
+}
+#new-post-div #new-post-form {
+  background-color: blue;
+}
+#new-post-div.show {
+  animation: slideRight 0.5s forwards;
+  display: block;
+}
+#new-post-div.hide {
+  animation: slideLeft 0.4s forwards;
+  display: block;
+}
+
+@keyframes slideLeft {
+  from {
+    left: 0;
+  }
+  to {
+    left: -100vw;
+  }
+}
+@keyframes slideRight {
+  from {
+    left: -100vw;
+  }
+  to {
+    left: 0;
+  }
 }
 
 /*# sourceMappingURL=styles.css.map */

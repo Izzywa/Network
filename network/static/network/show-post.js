@@ -171,7 +171,7 @@ function Pagination(props) {
 
     return (
         <>
-        <nav aria-label="...">
+        <nav aria-label="posts-pagination">
             <ul className="pagination">
               <li className="page-item">
                 <a className="page-link" data-page={props.pagination.has_previous ? (parseInt(props.currentPage) - 1):1} onClick={pageChanger}>

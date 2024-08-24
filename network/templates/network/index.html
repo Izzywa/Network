@@ -4,7 +4,6 @@
 {% block body %}
 
 <script type="text/babel" src="{% static 'network/new-post.js' %}"></script>
-
 <script type="text/babel" src="{% static 'network/show-post.js' %}"></script>
 
 <script type="text/babel">
@@ -16,6 +15,7 @@
         
         });
 
+        const [show, setShow] = React.useState('');
 
         function changeFilter(event) {
             setPage ({
@@ -34,14 +34,18 @@
                 </li>
             )
         }
+
+        let authenticated = false;
+
         {% if user.is_authenticated %}
-        let username = `{{user.username}}`;
+            let username = `{{user.username}}`;
+            authenticated = true;
         {% endif %}
 
         return (
             <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
-                <NewPostBtn />
+                <NewPostBtn setShow={setShow} show={show} authenticated={authenticated}/>
             
                 <div>
                   <ul className="navbar-nav mr-auto ml-auto">
@@ -67,6 +71,9 @@
                 </div>
               </nav>
               <LoadPost filter={page.filter} page={page.page} changePage={setPage}/>
+              {% if user.is_authenticated%}
+                <NewPost show={show} setShow={setShow}/>
+              {% endif %}
               </>
         )
     }
