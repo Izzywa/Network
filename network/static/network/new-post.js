@@ -36,7 +36,6 @@ function NewPostBtn(props) {
     }
 }
 
-
 function NewPost(props) {
     function changeShow() {
         if (props.show === 'show') {
@@ -50,7 +49,10 @@ function NewPost(props) {
         <>
         <div id="new-post-div" className={props.show}>
             <div className="container" id="new-post-form" onClick={changeShow}>
-                
+                <form action="#" method="POST">
+                    <input type="hidden" name="_token" value={props.csrf_token} />
+                    <input type="submit" value="Upload"/>
+                </form>
             </div>
         </div>
         </>

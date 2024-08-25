@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Follows, Post, Like
 
@@ -71,9 +72,15 @@ def page(request, filter, num):
     if filter == "all":
         posts = Post.objects.all().order_by("-timestamp")
     elif filter == "following":
-        user = request.user
-        user_following_list = [person.followed for person in user.following.all()]
-        posts = Post.objects.filter(poster__in=user_following_list).order_by("-timestamp")
+        if request.user.is_authenticated:
+            user = request.user
+            user_following_list = [person.followed for person in user.following.all()]
+            posts = Post.objects.filter(poster__in=user_following_list).order_by("-timestamp")
+        else:
+            return JsonResponse({
+                "type": "danger",
+                "message": "Unauthorised"
+            }, status=400)
     else:
         try:
             username = User.objects.get(username=filter)
@@ -84,6 +91,8 @@ def page(request, filter, num):
             }, status=400)
         
         posts = Post.objects.filter(poster=username).order_by("-timestamp")
+        
+    print(not request.user.is_authenticated)
         
     if len(posts) == 0:
         return JsonResponse('None', safe=False)
