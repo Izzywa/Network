@@ -48,10 +48,18 @@ function NewPost(props) {
     return (
         <>
         <div id="new-post-div" className={props.show}>
-            <div className="container" id="new-post-form" onClick={changeShow}>
+            <div className="container py-5" id="new-post-form">
+                <div className="p-2 d-inline-flex"id="new-post-back-btn" onClick={changeShow}>
+                    <span><i className="fa-sharp fa-solid fa-arrow-left"></i></span>
+                </div>
                 <form action="#" method="POST">
-                    <input type="hidden" name="_token" value={props.csrf_token} />
-                    <input type="submit" value="Upload"/>
+                <div className="mb-3">
+                    <label htmlFor="new-post-textarea" className="form-label title"><span>NEW POST</span></label>
+                    <textarea className="form-control" id="new-post-textarea" rows="3"></textarea>
+                </div>
+                <div className="d-inline-flex brand">
+                    <input className="submit-btn"type="submit" value="POST"/>
+                </div>
                 </form>
             </div>
         </div>

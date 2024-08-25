@@ -119,7 +119,8 @@ li.page-item.active {
   display: none;
 }
 #new-post-div #new-post-form {
-  background-color: blue;
+  background-color: black;
+  border-left: 2px solid blue;
 }
 #new-post-div.show {
   animation: slideRight 0.5s forwards;
@@ -145,6 +146,9 @@ li.page-item.active {
   to {
     left: 0;
   }
+}
+.fa-arrow-left {
+  color: whitesmoke;
 }
 
 /*# sourceMappingURL=styles.css.map */

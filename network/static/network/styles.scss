@@ -134,7 +134,8 @@ li.page-item{
     padding-top: 5em;
     display: none;
     #new-post-form {
-        background-color: blue;
+        background-color: black;
+        border-left: 2px solid blue;
         
     }
 
@@ -165,4 +166,8 @@ li.page-item{
         left: 0;
     }
     
+}
+
+.fa-arrow-left {
+    color: whitesmoke
 }

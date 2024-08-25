@@ -114,3 +114,15 @@ def page(request, filter, num):
         "has_next": this_page.has_next(),
         "has_previous": this_page.has_previous()
         }, safe=False)
+    
+@csrf_exempt
+@login_required
+def compose(request):
+    if request.method != "POST":
+        return JsonResponse({
+            "error": True,
+            "type": "danger",
+            "message": "POST request required."
+        })
+    else:
+        return None
