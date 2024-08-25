@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -6,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+
 
 from .models import User, Follows, Post, Like
 
@@ -123,6 +125,15 @@ def compose(request):
             "error": True,
             "type": "danger",
             "message": "POST request required."
-        })
+        }, status=400)
     else:
-        return None
+        content = json.loads(request.body)
+        if content.get("text").strip() == "":
+            print("empty")
+            return JsonResponse({
+            "error": True,
+            "type": "info",
+            "message": "Post must not be empty."
+        }, status=400)
+        else:
+            return None

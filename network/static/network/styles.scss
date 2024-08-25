@@ -133,7 +133,7 @@ li.page-item{
     width: 100vw;
     padding-top: 5em;
     display: none;
-    #new-post-form {
+    #new-post-container {
         background-color: black;
         border-left: 2px solid blue;
         
@@ -169,5 +169,9 @@ li.page-item{
 }
 
 .fa-arrow-left {
-    color: whitesmoke
+    color: whitesmoke;
+}
+
+#new-post-back-btn {
+    cursor: pointer;
 }

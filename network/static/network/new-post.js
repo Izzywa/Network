@@ -45,24 +45,33 @@ function NewPost(props) {
         }
     }
 
+    function preventDefault(event){
+        event.preventDefault();
+        return false;
+    }
+
     return (
         <>
         <div id="new-post-div" className={props.show}>
-            <div className="container py-5" id="new-post-form">
+            <div className="container py-5" id="new-post-container">
                 <div className="p-2 d-inline-flex"id="new-post-back-btn" onClick={changeShow}>
                     <span><i className="fa-sharp fa-solid fa-arrow-left"></i></span>
                 </div>
-                <form action="#" method="POST">
+                <form id="new-post-form" onSubmit={preventDefault}>
                 <div className="mb-3">
                     <label htmlFor="new-post-textarea" className="form-label title"><span>NEW POST</span></label>
                     <textarea className="form-control" id="new-post-textarea" rows="3"></textarea>
                 </div>
                 <div className="d-inline-flex brand">
-                    <input className="submit-btn"type="submit" value="POST"/>
+                    <input className="submit-btn" type="submit" value="POST"/>
                 </div>
                 </form>
             </div>
         </div>
         </>
     )
+}
+
+const Post = () => {
+    return None;
 }

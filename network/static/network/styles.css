@@ -118,7 +118,7 @@ li.page-item.active {
   padding-top: 5em;
   display: none;
 }
-#new-post-div #new-post-form {
+#new-post-div #new-post-container {
   background-color: black;
   border-left: 2px solid blue;
 }
@@ -149,6 +149,10 @@ li.page-item.active {
 }
 .fa-arrow-left {
   color: whitesmoke;
+}
+
+#new-post-back-btn {
+  cursor: pointer;
 }
 
 /*# sourceMappingURL=styles.css.map */

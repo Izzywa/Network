@@ -204,11 +204,11 @@ function EmptyPost(props) {
         'heading': 'Nothing to see here.',
         'following':{
             'first_line': 'You are not following anybody right now.',
-            'second_line': 'How about checking out all posts and follow someone that catch your eye.'
+            'second_line': 'Click on the username on the top of each post to view the user.'
         },
         'user': {
             'first_line': 'You have not made any post',
-            'second_line': 'Click the new post to make one.'
+            'second_line': 'Click the new post button on the top left to make one.'
         }
     }
     return (<div className="m-3">
