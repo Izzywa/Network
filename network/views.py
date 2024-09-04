@@ -125,10 +125,10 @@ def compose(request):
             "error": True,
             "type": "danger",
             "message": "POST request required."
-        }, status=400)
+            }, status=400)
     else:
-        content = json.loads(request.body)
-        if content.get("text").strip() == "":
+        content = json.loads(request.body).get("content", "")
+        if content.strip() == "":
             print("empty")
             return JsonResponse({
             "error": True,
@@ -136,4 +136,8 @@ def compose(request):
             "message": "Post must not be empty."
         }, status=400)
         else:
-            return None
+            return JsonResponse({
+                "error": False,
+                "type": "success",
+                "message": f"Post successfully made. the content was {content}"
+            }, status=201)

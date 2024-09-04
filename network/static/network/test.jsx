@@ -235,3 +235,27 @@ return (
         </>
 )
         
+const UsePost = () => {
+    const [message, setMessage] = React.useState(null)
+
+    React.useEffect(() => {
+        fetch('/post', {
+            method: 'POST',
+            body: JSON.stringify({
+                content: 'hello'
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            setMessage(result)
+        })
+        .catch(error => {
+            alert(error);
+        })
+    }, [])
+
+    console.log(message);
+
+    return null;
+
+}

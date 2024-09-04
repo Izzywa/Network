@@ -222,3 +222,4 @@ function EmptyPost(props) {
     )
 }
 
+export default ShowAlertBox
