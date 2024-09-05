@@ -6,6 +6,13 @@ function LoadPost(props) {
                 <PostTitle filter={props.filter.toUpperCase()} />
                 <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
                 </>
+            case props.filter !== 'all':
+                return <>
+                <PostTitle filter={props.filter} />
+                <Profile username={props.filter}/>
+                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
+                </>
+
             default:
                 return <>
                 <PostTitle filter={props.filter} />
@@ -19,6 +26,63 @@ function LoadPost(props) {
         {Filter()}
         </div>
     )
+}
+
+const UseFetchProfile = (url) => {
+    const [profile, setProfile] = React.useState(null)
+
+    React.useEffect(() => {
+        fetch(url)
+        .then(response => response.json())
+        .then(result => {
+            setProfile(result)
+        })
+    }, [url]);
+
+    return profile
+}
+
+function FollowBtn() {
+    return(
+    <h1>ADD FOLLOW BUTTON</h1>
+    )
+}
+
+function Profile(props) {
+    /* Display the number of followers the user has, as well as the number of people that the user follows.*/
+    const [follow, setFollow] = React.useState(false)
+    
+    let url = `profile/${props.username}`
+    const profile = UseFetchProfile(url);
+
+    function FollowNum() {
+        return(
+            <>
+            <h1>followers {profile && profile.followers}</h1>
+            <h1>following {profile && profile.following}</h1>
+            </>
+        )
+    }
+
+    /*For any other user who is signed in, this page should also display a “Follow” or “Unfollow” button 
+    that will let the current user toggle whether or not they are following this user’s posts. 
+    Note that this only applies to any “other” user: a user should not be able to follow themselves.*/
+
+    if ((profile && profile.authenticated) && !(profile && profile.self)) {
+        return(
+            <>
+            <FollowBtn />
+            < FollowNum />
+            </>
+        )
+    } else {
+        return (
+            <>
+            <FollowNum />
+            </>
+        )
+
+    }
 }
 
 function PostTitle(props) {
@@ -105,6 +169,13 @@ function FetchPage(props) {
     let url = `page/${props.filter}/${props.page}`
     const pageList = UseFetchPage(url);
 
+    function userProfile(event) {
+        props.changePage({
+            'filter': event.currentTarget.dataset.filter,
+            'page': 1
+        })
+    }
+
     if (pageList.error) {
         return (   
             <>
@@ -123,7 +194,7 @@ function FetchPage(props) {
                 pageList.object_list && pageList.object_list.map((item) => {
                     return <div key={item.id}>
                     <div className="card text-bg-dark mb-3">
-                        <div className="card-header">{item.poster}</div>
+                        <div className="card-header" data-filter={item.poster} onClick={userProfile}>{item.poster}</div>
                         <div className="card-body">
                           <p className="card-text">{item.content}</p>
                           <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>

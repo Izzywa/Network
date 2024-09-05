@@ -144,3 +144,28 @@ def compose(request):
                 "type": "success",
                 "message": "Post successfully made."
             }, status=201)
+            
+def profile(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return JsonResponse('None', safe=False)
+    
+    following = user.following.all().count()
+    followers = user.follower.all().count()
+    
+    if request.user.is_authenticated and user == request.user:
+        self = True
+    else:
+        self = False
+
+    return JsonResponse({
+        "following": following,
+        "followers": followers,
+        "authenticated": request.user.is_authenticated,
+        "self": self,
+    }, safe=False)
+    
+@login_required
+def follow(request, username):
+    return None
