@@ -115,11 +115,21 @@ body {
     color:black;
 }
 
-li.page-item{
+select , .page-item > button, select > option {
     font-family: 'Courier New', Courier, monospace;
     color: black;
-    &.active {
-        background-color: blue;
+    font-size: 1em;
+    font-weight: bold;
+    &:disabled {
+        font-weight: lighter;
+    }
+}
+
+select {
+    padding-left: 0.8em;
+    padding-right: 0.5em;
+    >option {
+        background-color: red;
     }
 }
 

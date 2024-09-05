@@ -259,3 +259,18 @@ const UsePost = () => {
     return null;
 
 }
+
+{
+    list && list.map((item) => {
+        if (item == props.currentPage) {
+            return( <li key ={item} className="page-item active" aria-current="page">
+                <span className="page-link">
+                  <span>{item}</span>
+                  <span className="sr-only">(current)</span>
+                </span>
+              </li>)
+        } else {
+            return <li key={item} className="page-item" data-page={item} onClick={pageChanger}><a className="page-link"><span>{item}</span></a></li>
+        }
+    })
+}

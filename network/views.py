@@ -94,7 +94,6 @@ def page(request, filter, num):
         
         posts = Post.objects.filter(poster=username).order_by("-timestamp")
         
-    print(not request.user.is_authenticated)
         
     if len(posts) == 0:
         return JsonResponse('None', safe=False)
@@ -131,7 +130,6 @@ def compose(request):
         content = json.loads(request.body).get("content", "")
         
         if content.strip() == "":
-            print("empty")
             return JsonResponse({
             "error": True,
             "type": "info",

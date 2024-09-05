@@ -140,30 +140,30 @@ function FetchPage(props) {
 }
 
 function Pagination(props) {
+
     function pageChanger(event) {
         props.changePage({
             'filter': props.filter,
-            'page': event.currentTarget.dataset.page
+            'page': event.currentTarget.value
         })
     }
     function PageNumber() {
         let list = Array(props.pagination.num_pages).fill().map((_, index) => index + 1);
+        
         return (
             <>
-            {
-                list && list.map((item) => {
-                    if (item == props.currentPage) {
-                        return( <li key ={item} className="page-item active" aria-current="page">
-                            <span className="page-link">
-                              <span>{item}</span>
-                              <span className="sr-only">(current)</span>
-                            </span>
-                          </li>)
-                    } else {
-                        return <li key={item} className="page-item" data-page={item} onClick={pageChanger}><a className="page-link"><span>{item}</span></a></li>
-                    }
-                })
-            }
+            <select onChange={pageChanger} value={props.currentPage}>
+                {
+                    list && list.map((item) => {
+                        return(
+                            <option key={item} value={item} className="page-option">
+                                {item}
+                            </option>
+                        )
+                    })
+                }
+            </select>
+
             </>
         )
 
@@ -174,15 +174,23 @@ function Pagination(props) {
         <nav aria-label="posts-pagination">
             <ul className="pagination">
               <li className="page-item">
-                <a className="page-link" data-page={props.pagination.has_previous ? (parseInt(props.currentPage) - 1):1} onClick={pageChanger}>
+                <button 
+                className="page-link"
+                disabled={!props.pagination.has_previous}
+                value={props.pagination.has_previous ? (parseInt(props.currentPage) - 1):1} 
+                onClick={pageChanger}>
                     <span className={props.pagination.has_previous ? "":"disabled"}>Previous</span>
-                    </a>
+                    </button>
               </li>
               < PageNumber />
               <li className={props.pagination.has_next ? "page-item":"page-item disabled"}>
-                <a className="page-link" data-page={props.pagination.has_next ? (parseInt(props.currentPage) + 1):props.pagination.num_pages} onClick={pageChanger}>
+                <button 
+                className="page-link" 
+                value={props.pagination.has_next ? (parseInt(props.currentPage) + 1):props.pagination.num_pages} 
+                disabled={!props.pagination.has_next}
+                onClick={pageChanger}>
                     <span>Next</span>
-                    </a>
+                    </button>
               </li>
             </ul>
           </nav>
