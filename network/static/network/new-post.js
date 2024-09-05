@@ -38,7 +38,8 @@ function NewPostBtn(props) {
 
 function NewPost(props) {
     const [post, setPost] = React.useState(null)
-    const [content, setContent] = React.useState("")
+    const textarea = React.useRef()
+
     function changeShow() {
         if (props.show === 'show') {
             props.setShow('hide');
@@ -49,6 +50,8 @@ function NewPost(props) {
 
     function handleSubmit(event){
         event.preventDefault();
+
+        const content = textarea.current.value;
         fetch('/post', {
             method: 'POST',
             body: JSON.stringify({
@@ -63,24 +66,22 @@ function NewPost(props) {
             alert(error);
         })
 
-        const timeoutId = setTimeout(() => {
+
+        const timeout = setTimeout(() => {
             setPost(null);
           }, 2000);
 
-          return () => clearTimeout(timeoutId);
+          return () => clearTimeout(timeout);
 
-    }
-
-    function changeContent(event) {
-        setContent(event.target.value)
     }
 
     function PostMessage() {
         if (post === null) {
             return <></>
         } else {
+            const type = ` alert alert-${post.type} text-center`
             return (
-            <div className={post.type} id="post-alert">
+            <div className={type} role="alert" id="post-alert">
             {post.message}
             </div>
             )
@@ -98,7 +99,12 @@ function NewPost(props) {
                     <PostMessage />
                 <div className="mb-3">
                     <label htmlFor="new-post-textarea" className="form-label title"><span>NEW POST</span></label>
-                    <textarea className="form-control" id="new-post-textarea" rows="3" onChange={changeContent}></textarea>
+                    <textarea 
+                        className="form-control" 
+                        id="new-post-textarea" 
+                        rows="3" 
+                        ref={textarea}
+                    ></textarea>
                 </div>
                 <div className="d-inline-flex brand">
                     <input className="submit-btn" type="submit" value="POST"/>
