@@ -18,14 +18,19 @@
 
         React.useEffect(() => {
             window.addEventListener('popstate', (event) => {
-                if (event.state !== null) {
+                if (event.state === null) {
+                    setPage({
+                        'filter': page.filter,
+                        'page': page.page
+                    })
+                } else {
                     setPage({
                         'filter': event.state.filter,
                         'page': event.state.page
                     })
                 }
-            }, [event])
-        })
+            })
+        }, [])
 
         function changeFilter(event) {
             const filter = event.currentTarget.dataset.filter;
