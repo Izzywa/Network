@@ -22,13 +22,13 @@
   outline: none;
 }
 
-#new-post-btn:hover {
+#new-post-btn:hover, .submit-btn:hover {
   background-color: black;
   color: whitesmoke;
   letter-spacing: 2px;
 }
 
-#new-post-div, .title, .brand, #new-post-btn {
+#new-post-div, .submit-btn, .title, .brand, #new-post-btn {
   justify-content: center;
   align-items: center;
 }

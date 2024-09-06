@@ -42,7 +42,7 @@ letter-spacing: 2px;
     @extend %center;
     
 }
-#new-post-btn:hover{
+#new-post-btn:hover, .submit-btn:hover{
     @extend %buttons-hover
 }
 
@@ -107,6 +107,7 @@ body {
 
 .submit-btn {
     @extend %buttons;
+    @extend %center;
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
 }

@@ -43,33 +43,52 @@ const UseFetchProfile = (url) => {
 }
 
 function FollowBtn(props) {
-    const [x, setX] = React.useState(false)
+    const url = `follow/${props.username}`;
+    const [follow, setFollow] = React.useState(null);
 
-    function changeX() {
-        if (x) {
-            setX(false)
-        } else {
-            setX(true)
-        }
+    React.useEffect(() => {
+        fetch(url)
+        .then(response => response.json())
+        .then(result => {
+            setFollow(result)
+        })
+        .catch(error => {
+            alert(error);
+        })
+    }, [url]);
+
+    function changeFollowStatus() {
+        fetch(url, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            setFollow(!follow)
+        })
+        .catch(error => {
+            alert(error)
+        })
+
     }
 
-    console.log(x);
-    if (x) {
-        return(
-            <div onClick={changeX}>ALREADY FOLLOWED, UNFOLLOW?</div>
-        )
+
+    if (follow === "None") {
+        return <></>
     } else {
         return(
-        <div onClick={changeX}>WANT TO FOLLOW?</div>
+            <div className="d-inline-flex" onClick={changeFollowStatus}>
+                <span className="submit-btn text-center">{follow ? "unfollow": "follow"}</span>
+            </div>
         )
     }
+
 }
 
 function Profile(props) {
     /* Display the number of followers the user has, as well as the number of people that the user follows.*/
-    
-    let url = `profile/${props.username}`
-    const profile = UseFetchProfile(url);
+
+    const profile = UseFetchProfile(`profile/${props.username}`);
 
     function FollowNum() {
         return(
@@ -212,7 +231,7 @@ function FetchPage(props) {
         return (<>
             {
                 pageList.object_list && pageList.object_list.map((item) => {
-                    return <div key={item.id}>
+                    return <div className="post-card"key={item.id}>
                     <div className="card text-bg-dark mb-3">
                         <div className="card-header" data-filter={item.poster} onClick={userProfile}>{item.poster}</div>
                         <div className="card-body">

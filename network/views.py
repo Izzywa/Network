@@ -166,8 +166,36 @@ def profile(request, username):
         "addFollowBtn": request.user.is_authenticated and user != request.user
     }, safe=False)
     
+@csrf_exempt
 @login_required
 def follow(request, username):
-    # "following_this_user": request.user in this_user_followers
-    # this_user_followers = [person.follower for person in user.follower.all()]
-    return None
+    try:
+        other_user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return JsonResponse("None", safe=False)
+    
+    current_user = request.user
+    other_user_follower_list = [follower.follower for follower in other_user.follower.all()]
+    following = current_user in other_user_follower_list
+    
+    if request.method == "GET":
+        return JsonResponse(following, safe=False)
+    
+    elif request.method == "POST":
+        #f1 = Follows.objects.create(follower=user1, followed=user2)
+        if following:
+            # insert code to unfollow
+            Follows.objects.get(follower=current_user, followed=other_user).delete()
+            return JsonResponse({
+                "message": "you unfollowed this user"
+            },status=200)
+        else:
+            # insert code to follow
+            Follows.objects.create(follower=current_user, followed=other_user)
+            return JsonResponse({
+                "message": "following successful"
+            }, status=200)
+    else:
+        return JsonResponse({
+            "message": "Not valid method."
+        }, status=400)
