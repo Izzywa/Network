@@ -12,11 +12,17 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import User, Follows, Post, Like
 
 
-def index(request):
+def index(request, filter="", page=None):
+    if not filter and not page:
+        return HttpResponseRedirect(reverse("page_view", args=('all', 1,)))
+    
     if request == 'PUT':
         pass
     else:
-        return render(request, "network/index.html") 
+        return render(request, "network/index.html", {
+            "filter": filter,
+            "page": page
+        }) 
 
 
 def login_view(request):
@@ -153,19 +159,15 @@ def profile(request, username):
     
     following = user.following.all().count()
     followers = user.follower.all().count()
-    
-    if request.user.is_authenticated and user == request.user:
-        self = True
-    else:
-        self = False
 
     return JsonResponse({
         "following": following,
         "followers": followers,
-        "authenticated": request.user.is_authenticated,
-        "self": self,
+        "addFollowBtn": request.user.is_authenticated and user != request.user
     }, safe=False)
     
 @login_required
 def follow(request, username):
+    # "following_this_user": request.user in this_user_followers
+    # this_user_followers = [person.follower for person in user.follower.all()]
     return None

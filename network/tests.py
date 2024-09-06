@@ -13,6 +13,7 @@ class UserTestCase(TestCase):
         user3 = User.objects.create(username="user3", email="user3@example.com", password="12345")
         
         # Create following
+        # User 1 and User 3 will be following user 2
         f1 = Follows.objects.create(follower=user1, followed=user2)
         f2 = Follows.objects.create(follower=user3, followed=user2)
         
@@ -37,11 +38,14 @@ class UserTestCase(TestCase):
         
         #test if user in following list
         user1_following_list = [i.followed for i in user1.following.all()]
+        # User 2 should be in User 1 following list
         self.assertIn(user2, user1_following_list, "User2 not in list of user1 followings")
+        # User 3 should NOT be in User 1 following list
         self.assertNotIn(user3, user1_following_list, "User3 is in list of user1 following")
         
         #test if user in followed list
         user2_follwers_list = [i.follower for i in user2.follower.all()]
+        # User 1 and User 3 should be in User 2 followers list
         self.assertTrue(user1 in user2_follwers_list and user3 in user2_follwers_list)
         
         #test if user can follow same user twice

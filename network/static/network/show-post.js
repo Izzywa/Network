@@ -42,15 +42,31 @@ const UseFetchProfile = (url) => {
     return profile
 }
 
-function FollowBtn() {
-    return(
-    <h1>ADD FOLLOW BUTTON</h1>
-    )
+function FollowBtn(props) {
+    const [x, setX] = React.useState(false)
+
+    function changeX() {
+        if (x) {
+            setX(false)
+        } else {
+            setX(true)
+        }
+    }
+
+    console.log(x);
+    if (x) {
+        return(
+            <div onClick={changeX}>ALREADY FOLLOWED, UNFOLLOW?</div>
+        )
+    } else {
+        return(
+        <div onClick={changeX}>WANT TO FOLLOW?</div>
+        )
+    }
 }
 
 function Profile(props) {
     /* Display the number of followers the user has, as well as the number of people that the user follows.*/
-    const [follow, setFollow] = React.useState(false)
     
     let url = `profile/${props.username}`
     const profile = UseFetchProfile(url);
@@ -68,10 +84,10 @@ function Profile(props) {
     that will let the current user toggle whether or not they are following this user’s posts. 
     Note that this only applies to any “other” user: a user should not be able to follow themselves.*/
 
-    if ((profile && profile.authenticated) && !(profile && profile.self)) {
+    if (profile && profile.addFollowBtn) {
         return(
             <>
-            <FollowBtn />
+            <FollowBtn username={props.username}/>
             < FollowNum />
             </>
         )
@@ -174,6 +190,10 @@ function FetchPage(props) {
             'filter': event.currentTarget.dataset.filter,
             'page': 1
         })
+
+        history.pushState({
+            filter: event.currentTarget.dataset.filter, page: 1
+        }, "", `${event.currentTarget.dataset.filter}=1`)
     }
 
     if (pageList.error) {
@@ -217,13 +237,19 @@ function Pagination(props) {
             'filter': props.filter,
             'page': event.currentTarget.value
         })
+
+        history.pushState({
+            filter: props.filter, 
+            page: event.currentTarget.value
+        }, "", `${props.filter}=${event.currentTarget.value}`)
     }
     function PageNumber() {
         let list = Array(props.pagination.num_pages).fill().map((_, index) => index + 1);
         
         return (
             <>
-            <select onChange={pageChanger} value={props.currentPage}>
+            <select onChange={pageChanger} 
+            value={props.currentPage}>
                 {
                     list && list.map((item) => {
                         return(

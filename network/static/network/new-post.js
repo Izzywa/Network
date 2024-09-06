@@ -64,7 +64,7 @@ function NewPost(props) {
         })
         .catch(error => {
             alert(error);
-        })
+        }, [])
 
 
         const timeout = setTimeout(() => {

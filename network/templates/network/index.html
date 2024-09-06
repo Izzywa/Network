@@ -9,23 +9,39 @@
     
     function App() {
         const [page, setPage] = React.useState({
-            'filter': 'all',
-            'page': 1
+            'filter': `{{filter}}`,
+            'page': {{page}}
         
         });
 
         const [show, setShow] = React.useState('');
 
+        React.useEffect(() => {
+            window.addEventListener('popstate', (event) => {
+                if (event.state !== null) {
+                    setPage({
+                        'filter': event.state.filter,
+                        'page': event.state.page
+                    })
+                }
+            }, [event])
+        })
+
         function changeFilter(event) {
+            const filter = event.currentTarget.dataset.filter;
+            const page = event.currentTarget.dataset.page
+            
             setPage ({
-                'filter': event.currentTarget.dataset.filter,
-                'page': event.currentTarget.dataset.page
+                'filter': filter,
+                'page': page
             })
+
+            history.pushState({filter: filter, page: page}, "", `${filter}=${page}`)
         }
         function NavItem(props) {
             return (
                 <li className="nav-item">
-                    <a className="nav-link" data-filter={props.filter}
+                    <a className="nav-link page-toggle" data-filter={props.filter}
                      onClick={changeFilter} data-page="1" 
                      id={props.filter === 'all'|| props.filter === 'following' ? props.filter:'username'}>
                         <span className={page.filter === props.filter? 'active': 'inactive'}>{props.display}</span>
