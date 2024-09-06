@@ -111,7 +111,7 @@ class UserTestCase(TestCase):
         
         # Test index page
         index = c.get("/")
-        self.assertEqual(index.status_code, 200)
+        self.assertEqual(index.status_code, 302)
         
         # Test login page
         login = c.get("/login")
