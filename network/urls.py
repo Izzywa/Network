@@ -12,5 +12,5 @@ urlpatterns = [
     path("page/<str:filter>/<int:num>", views.page, name="pagination"),
     path("post", views.compose, name="compose"),
     path("profile/<str:username>", views.profile, name="profile"),
-    path("follow/<str:username", views.follow, name="follow"),
+    path("follow/<str:username>", views.follow, name="follow"),
 ]
