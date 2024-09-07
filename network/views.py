@@ -199,3 +199,15 @@ def follow(request, username):
         return JsonResponse({
             "message": "Not valid method."
         }, status=400)
+        
+@csrf_exempt
+@login_required
+def edit(request, postId):
+    if request.method != "PUT":
+        return JsonResponse({
+            "error": True,
+            "type": "danger",
+            "message": "Method not allowed"
+        })
+    else:
+        return None

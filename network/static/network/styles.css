@@ -12,6 +12,21 @@
   outline: none;
 }
 
+.edit-btn {
+  border: none;
+  border-radius: 25px;
+  height: 1.8em;
+  width: 5em;
+  position: relative;
+  z-index: 1;
+  margin: 1px;
+  transition: 0.4s;
+  background-color: black;
+  color: whitesmoke;
+  outline: none;
+  font-family: "Courier New", Courier, monospace;
+}
+
 .title span {
   font-family: "Courier New", Courier, monospace;
   font-size: 2.5em;

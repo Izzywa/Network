@@ -91,7 +91,7 @@
                   </ul>
                 </div>
               </nav>
-              <LoadPost filter={page.filter} page={page.page} changePage={setPage}/>
+              <LoadPost filter={page.filter} page={page.page} changePage={setPage} username={authenticated ? username:authenticated}/>
               {% if user.is_authenticated%}
                 <NewPost show={show} setShow={setShow}/>
               {% endif %}

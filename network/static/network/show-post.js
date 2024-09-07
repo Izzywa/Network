@@ -4,19 +4,19 @@ function LoadPost(props) {
             case props.filter === 'following':
                 return <>
                 <PostTitle filter={props.filter.toUpperCase()} />
-                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
+                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage} username={props.username}/>
                 </>
             case props.filter !== 'all':
                 return <>
                 <PostTitle filter={props.filter} />
                 <Profile username={props.filter}/>
-                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
+                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage} username={props.username}/>
                 </>
 
             default:
                 return <>
                 <PostTitle filter={props.filter} />
-                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage}/>
+                <FetchPage filter={props.filter} page={props.page} changePage={props.changePage} username={props.username}/>
                 </>
         }
     });
@@ -200,12 +200,27 @@ const UseFetchPage =(url) => {
 
 }
 
-function FetchPage(props) {
-    let url = `page/${props.filter}/${props.page}`
-    const pageList = UseFetchPage(url);
+function PostDisplay ({ item, changePage, username}) {
+    const [editDisplay, setEditDisplay] = React.useState(false);
+    const editText = React.useRef();
+
+    function allowEdit() {
+        setEditDisplay(true);
+    }
+
+    function EditButton({edit}) {
+        if (edit) {
+            return (
+                <>
+                <button className="edit-btn" onClick={allowEdit}>EDIT</button></>
+            )
+        } else {
+            return <></>
+        }
+    }
 
     function userProfile(event) {
-        props.changePage({
+        changePage({
             'filter': event.currentTarget.dataset.filter,
             'page': 1
         })
@@ -214,6 +229,56 @@ function FetchPage(props) {
             filter: event.currentTarget.dataset.filter, page: 1
         }, "", `${event.currentTarget.dataset.filter}=1`)
     }
+
+    function handleEditSubmit(event) {
+        event.preventDefault();
+
+        setEditDisplay(false);
+    }
+
+    function ContentDisplay() {
+        if (editDisplay) {
+            return (
+                <>
+                <form className="editing-form" onSubmit={handleEditSubmit}>
+                <div className="mb-3">
+                    <textarea
+                    className="form-control edit-textarea"
+                    rows="3"
+                    ref={editText}
+                    defaultValue={item.content}
+                    ></textarea>
+                </div>
+                <input className="edit-btn" type="submit" value="SAVE" />
+                </form>
+            </>
+            )
+        } else {
+            return (
+                <p className="card-text">{item.content}</p>
+            )
+        }
+    }
+
+    return (
+            <div className="card text-bg-dark mb-3">
+                <div className="card-header row">
+                    <div className="col-8" data-filter={item.poster} onClick={userProfile}>{item.poster}</div> 
+                    <div className="col-4 text-right">
+                        <EditButton edit={username === item.poster} />
+                        </div>
+                    </div>
+                <div className="card-body">
+                    <ContentDisplay />
+                    <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                </div>
+                </div>
+    )
+}
+
+function FetchPage(props) {
+    let url = `page/${props.filter}/${props.page}`
+    const pageList = UseFetchPage(url);
 
     if (pageList.error) {
         return (   
@@ -231,15 +296,11 @@ function FetchPage(props) {
         return (<>
             {
                 pageList.object_list && pageList.object_list.map((item) => {
-                    return <div className="post-card"key={item.id}>
-                    <div className="card text-bg-dark mb-3">
-                        <div className="card-header" data-filter={item.poster} onClick={userProfile}>{item.poster}</div>
-                        <div className="card-body">
-                          <p className="card-text">{item.content}</p>
-                          <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                    return (
+                        <div className="post-card"key={item.id}>
+                            <PostDisplay item={item} changePage={props.changePage} username={props.username}/>
                         </div>
-                      </div>
-                    </div>
+                )
                 })
             }
             < Pagination pagination={pageList.pagination} currentPage={props.page} changePage={props.changePage} filter={props.filter}/>

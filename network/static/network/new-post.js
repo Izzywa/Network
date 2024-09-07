@@ -104,7 +104,7 @@ function NewPost(props) {
                         id="new-post-textarea" 
                         rows="3" 
                         ref={textarea}
-                    ></textarea>
+                        ></textarea>
                 </div>
                 <div className="d-inline-flex brand">
                     <input className="submit-btn" type="submit" value="POST"/>

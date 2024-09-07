@@ -275,6 +275,21 @@ const UsePost = () => {
     })
 }
 
+<div className="post-card"key={item.id}>
+                    <div className="card text-bg-dark mb-3">
+                        <div className="card-header row">
+                            <div className="col-8" data-filter={item.poster} onClick={userProfile}>{item.poster}</div> 
+                            <div className="col-4 text-right">
+                                <EditButton edit={props.username === item.poster} />
+                                </div>
+                            </div>
+                        <div className="card-body">
+                          <p className="card-text">{item.content}</p>
+                          <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                        </div>
+                      </div>
+                    </div>
+
 /* 
 REQUIREMENTS:
 
@@ -283,7 +298,7 @@ New Post:
     by filling in text into a text area and then clicking a button to submit the post.
     (DONE)
 
-    The screenshot at the top of this specification shows the “New Post” box at the top of the “All Posts” page. 
+    -The screenshot at the top of this specification shows the “New Post” box at the top of the “All Posts” page. 
     You may choose to do this as well, or you may make the “New Post” feature a separate page. (DONE)
 
 All Posts: 
@@ -296,6 +311,7 @@ All Posts:
     -the post content itself (DONE), 
     -the date and time at which the post was made (DONE), 
     - and the number of “likes” the post has (this will be 0 for all posts until you implement the ability to “like” a post later).
+    (NOT DONE- to do with like button)
 
 Profile Page: 
     -Clicking on a username should load that user’s profile page. 
@@ -322,16 +338,27 @@ Pagination:
     (which should be older than the current page of posts). 
     If not on the first page, a “Previous” button should appear to take the user to the previous page of posts as well.
     (TO CHANGE THE NUMBER OF DISPLAYED POST TO 10 AFTER DEBUG)
-    (NEXT AND PREVIOUS BUTTON APPEAR ONLY WHEN NEEDED)
-    
-See the Hints section for some suggestions on how to implement this.
-Edit Post: Users should be able to click an “Edit” button or link on any of their own posts to edit that post.
-When a user clicks “Edit” for one of their own posts, the content of their post should be replaced with a textarea where the user can edit the content of their post.
-The user should then be able to “Save” the edited post. Using JavaScript, you should be able to achieve this without requiring a reload of the entire page.
-For security, ensure that your application is designed such that it is not possible for a user, via any route, to edit another user’s posts.
-“Like” and “Unlike”: Users should be able to click a button or link on any post to toggle whether or not they “like” that post.
-Using JavaScript, you should asynchronously let the server know to update the like count (as via a call to fetch) and then update the post’s like count displayed on the page, without requiring a reload of the entire page.
-TODO:
+    (DONE)
+
+Edit Post: 
+    -Users should be able to click an “Edit” button or link on any of their own posts to edit that post.
+    (DONE)
+    -When a user clicks “Edit” for one of their own posts, 
+    the [[ content of their post should be replaced with a textarea ]] where the user can edit the content of their post.
+    (DONE)
+    -The user should then be able to “Save” the edited post. 
+    Using JavaScript, you should be able to achieve this without requiring a reload of the entire page.
+    -For security, ensure that your application is designed such that it is not possible for a user, via any route, to edit another user’s posts.
+    (NOT YET)
+
+“Like” and “Unlike”: 
+    -Users should be able to click a button or link on any post to toggle whether or not they “like” that post.
+    Using JavaScript, you should asynchronously let the server know to update the like count (as via a call to fetch) 
+    and then update the post’s like count displayed on the page, without requiring a reload of the entire page.
+    (NOT YET)
+
+
+EXTRA TODO:
     - follow button, interactivity when clicking. add some glowing border or something
 
 */
