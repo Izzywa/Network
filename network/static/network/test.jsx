@@ -348,8 +348,9 @@ Edit Post:
     (DONE)
     -The user should then be able to “Save” the edited post. 
     Using JavaScript, you should be able to achieve this without requiring a reload of the entire page.
+    (DONE)
     -For security, ensure that your application is designed such that it is not possible for a user, via any route, to edit another user’s posts.
-    (NOT YET)
+    (DONE)
 
 “Like” and “Unlike”: 
     -Users should be able to click a button or link on any post to toggle whether or not they “like” that post.

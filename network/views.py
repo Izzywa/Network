@@ -207,7 +207,44 @@ def edit(request, postId):
         return JsonResponse({
             "error": True,
             "type": "danger",
-            "message": "Method not allowed"
-        })
+            "message": "Method not allowed."
+        }, status=400)
     else:
-        return None
+# ensure that your application is designed such that it is not possible for a user, 
+# via any route, to edit another user’s posts.
+        try:
+            post = Post.objects.get(pk=postId)
+        except Post.DoesNotExist:
+            return JsonResponse({
+                "error": True,
+                "type": "danger",
+                "message": "Post does not exist."
+            }, status=400)
+            
+        poster = post.poster
+        
+        if poster != request.user:
+            return JsonResponse({
+                "error": True,
+                "type": "danger",
+                "message": "User not authorised."
+            }, status=400)
+            
+        content = json.loads(request.body).get("content", "")
+        
+        if content.strip() == "":
+            return JsonResponse({
+            "error": True,
+            "type": "info",
+            "message": "Post must not be empty."
+        }, status=400)
+            
+        else:
+            post.content = content
+            post.save()
+            
+            return JsonResponse({
+                "error": False,
+                "type": "success",
+                "message": content
+            }, status=201)

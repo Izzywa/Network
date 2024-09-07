@@ -31,7 +31,7 @@ class Post(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.poster} posted on {self.timestamp}"
+        return f"{self.poster} posted [{self.content}]on {self.timestamp}"
     
     def serialize(self):
         return {

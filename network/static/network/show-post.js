@@ -1,4 +1,5 @@
 function LoadPost(props) {
+
     const Filter = React.useCallback(() => {
         switch(true) {
             case props.filter === 'following':
@@ -9,7 +10,7 @@ function LoadPost(props) {
             case props.filter !== 'all':
                 return <>
                 <PostTitle filter={props.filter} />
-                <Profile username={props.filter}/>
+                <Profile username={props.filter} />
                 <FetchPage filter={props.filter} page={props.page} changePage={props.changePage} username={props.username}/>
                 </>
 
@@ -43,11 +44,11 @@ const UseFetchProfile = (url) => {
 }
 
 function FollowBtn(props) {
-    const url = `follow/${props.username}`;
+    const followUrl = `follow/${props.username}`;
     const [follow, setFollow] = React.useState(null);
 
     React.useEffect(() => {
-        fetch(url)
+        fetch(followUrl)
         .then(response => response.json())
         .then(result => {
             setFollow(result)
@@ -55,10 +56,10 @@ function FollowBtn(props) {
         .catch(error => {
             alert(error);
         })
-    }, [url]);
+    }, [followUrl]);
 
     function changeFollowStatus() {
-        fetch(url, {
+        fetch(followUrl, {
             method: 'POST'
         })
         .then(response => response.json())
@@ -70,6 +71,18 @@ function FollowBtn(props) {
             alert(error)
         })
 
+        if (follow) {
+            props.setProfile({
+                ...props.profile,
+                'followers': props.profile.followers - 1
+            })
+        } else {
+            props.setProfile({
+                ...props.profile,
+                'followers': props.profile.followers + 1
+            })   
+        }
+
     }
 
 
@@ -78,7 +91,7 @@ function FollowBtn(props) {
     } else {
         return(
             <div className="d-inline-flex" onClick={changeFollowStatus}>
-                <span className="submit-btn text-center">{follow ? "unfollow": "follow"}</span>
+                <span className="submit-btn text-center pt-1">{follow ? "unfollow": "follow"}</span>
             </div>
         )
     }
@@ -87,14 +100,36 @@ function FollowBtn(props) {
 
 function Profile(props) {
     /* Display the number of followers the user has, as well as the number of people that the user follows.*/
+    const url = `profile/${props.username}`
+    const [profile, setProfile] = React.useState({
+        'followers': null,
+        'following': null,
+        'addFollowBtn': false
+    })
 
-    const profile = UseFetchProfile(`profile/${props.username}`);
+    React.useEffect(() => {
+        fetch(url)
+        .then(response => response.json())
+        .then(result => {
+            setProfile({
+                'followers': result.followers,
+                'following': result.following,
+                'addFollowBtn':result.addFollowBtn
+            })
+        })
+    }, [url]);
 
     function FollowNum() {
         return(
             <>
-            <h1>followers {profile && profile.followers}</h1>
-            <h1>following {profile && profile.following}</h1>
+            <div className="row follow-row px-2 py-3">
+                <div className="col follow-col">
+                    <span className="follow">followers {profile && profile.followers}</span>
+                </div>
+                <div className="col">
+                    <span className="follow">following {profile && profile.following}</span>
+                </div>
+            </div>
             </>
         )
     }
@@ -106,7 +141,7 @@ function Profile(props) {
     if (profile && profile.addFollowBtn) {
         return(
             <>
-            <FollowBtn username={props.username}/>
+            <FollowBtn username={props.username} profile={profile} setProfile={setProfile}/>
             < FollowNum />
             </>
         )
@@ -200,12 +235,17 @@ const UseFetchPage =(url) => {
 
 }
 
-function PostDisplay ({ item, changePage, username}) {
+function PostDisplay ({ item, changePage, username }) {
     const [editDisplay, setEditDisplay] = React.useState(false);
-    const editText = React.useRef();
+    const [contentDisplay, setContentDisplay] = React.useState(item.content)
+    const editedText = React.useRef();
 
     function allowEdit() {
-        setEditDisplay(true);
+        if (editDisplay) {
+            setEditDisplay (false)
+        } else {
+            setEditDisplay(true);
+        }
     }
 
     function EditButton({edit}) {
@@ -233,7 +273,30 @@ function PostDisplay ({ item, changePage, username}) {
     function handleEditSubmit(event) {
         event.preventDefault();
 
-        setEditDisplay(false);
+        const newText = editedText.current.value;
+
+        if (newText.trim() !== '') {
+            fetch(`edit/${item.id}`, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    content: newText
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.error) {
+                    alert(result.message)
+                } else {
+                    setContentDisplay(result.message)
+                    setEditDisplay(false);
+                }
+            })
+            .catch(error => {
+                alert(error);
+            })
+        } else {
+            return false
+        }
     }
 
     function ContentDisplay() {
@@ -245,7 +308,7 @@ function PostDisplay ({ item, changePage, username}) {
                     <textarea
                     className="form-control edit-textarea"
                     rows="3"
-                    ref={editText}
+                    ref={editedText}
                     defaultValue={item.content}
                     ></textarea>
                 </div>
@@ -255,7 +318,7 @@ function PostDisplay ({ item, changePage, username}) {
             )
         } else {
             return (
-                <p className="card-text">{item.content}</p>
+                <p className="card-text">{contentDisplay}</p>
             )
         }
     }
