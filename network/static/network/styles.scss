@@ -121,17 +121,13 @@ select , .page-item > button, select > option {
     color: black;
     font-size: 1em;
     font-weight: bold;
-    &:disabled {
-        font-weight: lighter;
-    }
+    height:2.5em;
 }
 
 select {
     padding-left: 0.8em;
     padding-right: 0.5em;
-    >option {
-        background-color: red;
-    }
+    border-radius: 4px;
 }
 
 #new-post-div {

@@ -285,29 +285,30 @@ function Pagination(props) {
 
     }
 
+    function PrevNextBtn({ name, show }) {
+        if (show) {
+            return (
+                <li className="page-item">
+                <button 
+                className="page-link"
+                value={name === "Previous" ? (parseInt(props.currentPage) - 1):(parseInt(props.currentPage) + 1)} 
+                onClick={pageChanger}>
+                    <span>{name}</span>
+                </button>
+            </li>
+            )
+        } else {
+            return <></>
+        }
+    }
+
     return (
         <>
         <nav aria-label="posts-pagination">
             <ul className="pagination">
-              <li className="page-item">
-                <button 
-                className="page-link"
-                disabled={!props.pagination.has_previous}
-                value={props.pagination.has_previous ? (parseInt(props.currentPage) - 1):1} 
-                onClick={pageChanger}>
-                    <span className={props.pagination.has_previous ? "":"disabled"}>Previous</span>
-                    </button>
-              </li>
+            < PrevNextBtn name='Previous' show={props.pagination.has_previous}/>
               < PageNumber />
-              <li className={props.pagination.has_next ? "page-item":"page-item disabled"}>
-                <button 
-                className="page-link" 
-                value={props.pagination.has_next ? (parseInt(props.currentPage) + 1):props.pagination.num_pages} 
-                disabled={!props.pagination.has_next}
-                onClick={pageChanger}>
-                    <span>Next</span>
-                    </button>
-              </li>
+              < PrevNextBtn name='Next' show={props.pagination.has_next}/>
             </ul>
           </nav>
         </>
