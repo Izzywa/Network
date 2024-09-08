@@ -239,30 +239,4 @@ select {
         color:red
     }
 
-
-    &.like {
-        animation: changeColorLike 0.5s forwards;
-    }
-    &.unlike {
-        animation: changeColorUnlike 0.5s forwards;
-    }
-
-}
-
-@keyframes changeColorLike {
-    from {
-        color: black
-    }
-    to {
-        color: red
-    }
-}
-
-@keyframes changeColorUnlike {
-    from {
-        color: red
-    }
-    to {
-        color: black
-    }
 }

@@ -105,7 +105,7 @@ def page(request, filter, num):
     if len(posts) == 0:
         return JsonResponse('None', safe=False)
         
-    page_list = Paginator(posts,2)
+    page_list = Paginator(posts,5)
     try:
         this_page = page_list.page(num)
     except PageNotAnInteger:
@@ -258,19 +258,52 @@ def edit(request, postId):
             }, status=201)
             
 @csrf_exempt
-@login_required
 def like(request, postId):
-    # create liking a post: l1 = Like.objects.create(post=p1, liker=user1)
-    # count likes:  user1_first_post.like.all().count(),1
+    try:
+        post = Post.objects.get(pk=postId)
+    except Post.DoesNotExist:
+        return JsonResponse({
+            "message": "Post does not exist"
+        }, status=400)
+        
+    if request.user.is_authenticated:
+        try:
+            like = Like.objects.get(post=post, liker=request.user)
+            user_liked_this_post = True
+        except Like.DoesNotExist:
+            like = Like(post=post, liker=request.user)
+            user_liked_this_post = False
+    else:
+        user_liked_this_post = False
+        
     if request.method == "GET":
         return JsonResponse({
-            "message": "GET request used"
+            "likeNum": post.like.all().count(),
+            "userLikedThisPost": user_liked_this_post
         }, status=200)
-    elif request.method == "POST":
-        return JsonResponse({
-        "message": "PUT method used"
-        }, status=200)
+    elif request.method == "POST" and request.user.is_authenticated:
+        if user_liked_this_post:
+            #delete like here
+            like.delete()
+            return JsonResponse({
+                "likeNum": post.like.all().count(),
+                "userLikedThisPost": not user_liked_this_post
+            },status=200)
+        else:
+            # create like
+            try:
+                like.clean()
+                like.save()
+            except IntegrityError:
+                return JsonResponse({
+                    "message": "User cannot like the same post more than once."
+                }, status=400)
+                
+            return JsonResponse({
+                "likeNum": post.like.all().count(),
+                "userLikedThisPost": not user_liked_this_post
+            }, status=200)
     else:
         return JsonResponse({
             "message": "Method not allowed"
-        })
+        }, status=400)

@@ -226,37 +226,67 @@ const UseFetchPage =(url) => {
 
 }
 
-function LikeBtn ({ authenticated }) {
-    const [toggleLike, setToggleLike] = React.useState('')
-
-    const classList = `like-btn ${toggleLike}`
+function LikeBtn ({ authenticated, id }) {
+    const [liked, setLiked] = React.useState(false)
+    const [likeNum, setLikeNum] = React.useState(0);
+    const url = `like/${id}`
 
     function changeLike() {
-        if (toggleLike === 'like') {
-            setToggleLike('unlike')
-        } else {
-            setToggleLike('like')
-        }
+        //setLiked(!liked)
+        fetch(url, {
+            method: "POST"
+        })
+        .then(response => {
+            if (response.status === 200) {
+                response.json().then(result => {
+                    setLikeNum(result.likeNum)
+                    setLiked(result.userLikedThisPost)
+                })
+                .catch(error => {
+                    alert(error);
+                })
+            } else if (response.status === 400) {
+                response.json().then(result => {
+                    alert(result.message)
+                })
+                .catch(error => {
+                    alert(error)
+                })
+            } else {
+                alert('BAD REQUEST')
+            }
+        })
     }
-
-    const [likeNum, setLikeNum] = React.useState(0);
-
-    /*React.useEffect(() => {
-        fetch(followUrl)
-        .then(response => response.json())
-        .then(result => {
-            setFollow(result)
+   
+    React.useEffect(() => {
+        fetch(url)
+        .then(response => {
+            if (response.status === 200) {
+                response.json().then(result => {
+                    setLikeNum(result.likeNum)
+                    setLiked(result.userLikedThisPost)
+                })
+                .catch(error => {
+                    alert(error);
+                })
+            } else if (response.status === 400) {
+                response.json().then(result => {
+                    alert(result.message)
+                })
+                .catch(error => {
+                    alert(error)
+                })
+            } else {
+                alert('BAD REQUEST')
+            }
         })
-        .catch(error => {
-            alert(error);
-        })
-    }, [followUrl]);*/
+    }, [url]);
 
     return (
         <>
         <div className="container mt-1 text-right">
-            <span className={classList} onClick={authenticated ? changeLike:null}>
-                <i className="fa-solid fa-heart"> 100</i>
+            <span className={liked ? "like-btn liked": "like-btn"} onClick={authenticated ? changeLike:null}>
+                <i className="fa-solid fa-heart"> {likeNum}</i>
             </span>
         </div>
         </>
