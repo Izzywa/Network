@@ -104,6 +104,7 @@ function NewPost(props) {
                         id="new-post-textarea" 
                         rows="3" 
                         ref={textarea}
+                        maxLength="40"
                         ></textarea>
                 </div>
                 <div className="d-inline-flex brand">

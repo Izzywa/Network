@@ -27,7 +27,7 @@ class Follows(models.Model):
     
 class Post(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="post", blank=False)
-    content = models.TextField(blank=False, max_length=400)
+    content = models.TextField(blank=False, max_length=1000)
     timestamp = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):

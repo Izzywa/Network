@@ -142,6 +142,12 @@ def compose(request):
             "type": "info",
             "message": "Post must not be empty."
         }, status=400)
+        elif len(content) > 1000:
+            return JsonResponse({
+            "error": True,
+            "type": "info",
+            "message": f"Post must not be longer than 1000 character. This text have {len(content)} character"
+        }, status=400)
         else:
             user = request.user
             Post.objects.create(poster=user, content=content)
@@ -246,7 +252,12 @@ def edit(request, postId):
             "type": "info",
             "message": "Post must not be empty."
         }, status=400)
-            
+        elif len(content) > 1000:
+            return JsonResponse({
+            "error": True,
+            "type": "info",
+            "message": "Content must not be longer than 1000 character."
+        }, status=400)
         else:
             post.content = content
             post.save()
