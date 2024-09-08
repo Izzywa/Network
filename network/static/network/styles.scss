@@ -225,3 +225,44 @@ select {
 .follow {
     font-family: 'Courier New', Courier, monospace;
 }
+
+/*    animation-name: changeColor;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards; */
+.like-btn{
+    font-size:small;  
+    position: relative;
+    color: black;
+
+    &.liked {
+        color:red
+    }
+
+
+    &.like {
+        animation: changeColorLike 0.5s forwards;
+    }
+    &.unlike {
+        animation: changeColorUnlike 0.5s forwards;
+    }
+
+}
+
+@keyframes changeColorLike {
+    from {
+        color: black
+    }
+    to {
+        color: red
+    }
+}
+
+@keyframes changeColorUnlike {
+    from {
+        color: red
+    }
+    to {
+        color: black
+    }
+}

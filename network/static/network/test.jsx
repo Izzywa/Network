@@ -360,6 +360,5 @@ Edit Post:
 
 
 EXTRA TODO:
-    - follow button, interactivity when clicking. add some glowing border or something
-
+    -
 */

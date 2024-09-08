@@ -29,20 +29,6 @@ function LoadPost(props) {
     )
 }
 
-const UseFetchProfile = (url) => {
-    const [profile, setProfile] = React.useState(null)
-
-    React.useEffect(() => {
-        fetch(url)
-        .then(response => response.json())
-        .then(result => {
-            setProfile(result)
-        })
-    }, [url]);
-
-    return profile
-}
-
 function FollowBtn(props) {
     const followUrl = `follow/${props.username}`;
     const [follow, setFollow] = React.useState(null);
@@ -62,31 +48,36 @@ function FollowBtn(props) {
         fetch(followUrl, {
             method: 'POST'
         })
-        .then(response => response.json())
-        .then(result => {
-            console.log(result);
-            setFollow(!follow)
+        .then(response => {
+            if (response.status === 200) {
+                response.json().then(result => {
+                    setFollow(!follow)
+                    props.setProfile({
+                        ...props.profile,
+                        "followers": result.followers,
+                        "following": result.following
+                    })
+                }).catch(error => {
+                    alert(error)
+                })
+            } else if (response.status === 400) {
+                response.json().then(result => {
+                    alert(result.message)
+                    setFollow("None")
+                }).catch(error => {
+                    alert(error)
+                })
+            } else {
+                alert("BAD REQUEST")
+                setFollow("None")
+            }
         })
-        .catch(error => {
-            alert(error)
-        })
-
-        if (follow) {
-            props.setProfile({
-                ...props.profile,
-                'followers': props.profile.followers - 1
-            })
-        } else {
-            props.setProfile({
-                ...props.profile,
-                'followers': props.profile.followers + 1
-            })   
-        }
 
     }
 
 
     if (follow === "None") {
+        console.log('None test')
         return <></>
     } else {
         return(
@@ -235,6 +226,43 @@ const UseFetchPage =(url) => {
 
 }
 
+function LikeBtn ({ authenticated }) {
+    const [toggleLike, setToggleLike] = React.useState('')
+
+    const classList = `like-btn ${toggleLike}`
+
+    function changeLike() {
+        if (toggleLike === 'like') {
+            setToggleLike('unlike')
+        } else {
+            setToggleLike('like')
+        }
+    }
+
+    const [likeNum, setLikeNum] = React.useState(0);
+
+    /*React.useEffect(() => {
+        fetch(followUrl)
+        .then(response => response.json())
+        .then(result => {
+            setFollow(result)
+        })
+        .catch(error => {
+            alert(error);
+        })
+    }, [followUrl]);*/
+
+    return (
+        <>
+        <div className="container mt-1 text-right">
+            <span className={classList} onClick={authenticated ? changeLike:null}>
+                <i className="fa-solid fa-heart"> 100</i>
+            </span>
+        </div>
+        </>
+    )
+}
+
 function PostDisplay ({ item, changePage, username }) {
     const [editDisplay, setEditDisplay] = React.useState(false);
     const [contentDisplay, setContentDisplay] = React.useState(item.content)
@@ -333,7 +361,10 @@ function PostDisplay ({ item, changePage, username }) {
                     </div>
                 <div className="card-body">
                     <ContentDisplay />
-                    <footer className="blockquote-footer text-info"><small>{item.timestamp}</small></footer>
+                    <footer className="blockquote-footer text-info">
+                        <small>{item.timestamp}</small>
+                        < LikeBtn authenticated={username} id={item.id}/>
+                        </footer>
                 </div>
                 </div>
     )

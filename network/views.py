@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import IntegrityError
+from django.forms import ValidationError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -182,19 +183,26 @@ def follow(request, username):
         return JsonResponse(following, safe=False)
     
     elif request.method == "POST":
-        #f1 = Follows.objects.create(follower=user1, followed=user2)
         if following:
             # insert code to unfollow
             Follows.objects.get(follower=current_user, followed=other_user).delete()
-            return JsonResponse({
-                "message": "you unfollowed this user"
-            },status=200)
         else:
             # insert code to follow
-            Follows.objects.create(follower=current_user, followed=other_user)
-            return JsonResponse({
-                "message": "following successful"
-            }, status=200)
+            createfollow = Follows(follower=current_user, followed=other_user)
+            try:
+                createfollow.clean()
+                createfollow.save()
+            except ValidationError:
+                return JsonResponse({
+                    "message": "User cannot follow self."
+                }, status=400)
+            
+        # Update followings to take into considerations that multiple user could be following and unfollowing simultaneously 
+        
+        return JsonResponse({
+            "following": other_user.following.all().count(),
+            "followers": other_user.follower.all().count()
+        }, status=200)
     else:
         return JsonResponse({
             "message": "Not valid method."
@@ -248,3 +256,21 @@ def edit(request, postId):
                 "type": "success",
                 "message": content
             }, status=201)
+            
+@csrf_exempt
+@login_required
+def like(request, postId):
+    # create liking a post: l1 = Like.objects.create(post=p1, liker=user1)
+    # count likes:  user1_first_post.like.all().count(),1
+    if request.method == "GET":
+        return JsonResponse({
+            "message": "GET request used"
+        }, status=200)
+    elif request.method == "POST":
+        return JsonResponse({
+        "message": "PUT method used"
+        }, status=200)
+    else:
+        return JsonResponse({
+            "message": "Method not allowed"
+        })
