@@ -376,7 +376,7 @@ function PostDisplay ({ item, changePage, username }) {
             )
         } else {
             return (
-                <p className="card-text">{contentDisplay}</p>
+                <p className="card-text content-text">{contentDisplay}</p>
             )
         }
     }

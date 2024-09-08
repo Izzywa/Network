@@ -212,4 +212,8 @@ select {
   color: red;
 }
 
+.content-text {
+  white-space: pre-line;
+}
+
 /*# sourceMappingURL=styles.css.map */

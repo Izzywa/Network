@@ -105,7 +105,7 @@ def page(request, filter, num):
     if len(posts) == 0:
         return JsonResponse('None', safe=False)
         
-    page_list = Paginator(posts,5)
+    page_list = Paginator(posts,10)
     try:
         this_page = page_list.page(num)
     except PageNotAnInteger:
