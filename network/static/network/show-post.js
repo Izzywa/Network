@@ -559,21 +559,17 @@ function NewPostBtn(props) {
         }
     }
 
-    if (props.authenticated) {
-        return (<>
-            <div className="brand"  onMouseEnter={changeBrand} onMouseLeave={changeBrand} onClick={changeShow}>
-                    <button id="new-post-btn"><i className="fa-sharp fa-solid fa-pen-fancy" id="pen-icon">{brand}</i></button>
-            </div>
-            </>
-            )
-    } else {
-        return (<>
-            <div className="brand">
-                    <button id="new-post-btn"><i className="fa-sharp fa-solid fa-pen-fancy" id="pen-icon">{brand}</i></button>
-            </div>
-            </>
-            )
-    }
+    return (<>
+        <div 
+        className="brand"  
+        onMouseEnter={props.authenticated ? changeBrand:null} 
+        onMouseLeave={props.authenticated ? changeBrand:null} 
+        onClick={props.authenticated ? changeShow:null}>
+                <button id="new-post-btn"><i className="fa-sharp fa-solid fa-pen-fancy" id="pen-icon">{brand}</i></button>
+        </div>
+        </>
+        )
+
 }
 
 function NewPost(props) {
