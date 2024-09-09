@@ -75,19 +75,6 @@ function NewPost(props) {
 
     }
 
-    function PostMessage() {
-        if (post === null) {
-            return <></>
-        } else {
-            const type = ` alert alert-${post.type} text-center`
-            return (
-            <div className={type} role="alert" id="post-alert">
-            {post.message}
-            </div>
-            )
-        }
-    }
-
     return (
         <>
         <div id="new-post-div" className={props.show}>
@@ -96,7 +83,7 @@ function NewPost(props) {
                     <span><i className="fa-sharp fa-solid fa-arrow-left"></i></span>
                 </div>
                 <form id="new-post-form" onSubmit={handleSubmit}>
-                    <PostMessage />
+                    <PostMessage post={post}/>
                 <div className="mb-3">
                     <label htmlFor="new-post-textarea" className="form-label title"><span>NEW POST</span></label>
                     <textarea 
@@ -115,4 +102,17 @@ function NewPost(props) {
         </div>
         </>
     )
+}
+
+function PostMessage({ post }) {
+    if (post === null) {
+        return <></>
+    } else {
+        const type = ` alert alert-${post.type} text-center`
+        return (
+        <div className={type} role="alert" id="post-alert">
+        {post.message}
+        </div>
+        )
+    }
 }
