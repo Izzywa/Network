@@ -29,6 +29,8 @@ function LoadPost(props) {
     )
 }
 
+// For any other user who is signed in, this page should also display a “Follow” or “Unfollow” button that will let the current user toggle whether or not they are following this user’s posts. 
+//Note that this only applies to any “other” user: a user should not be able to follow themselves.
 function FollowBtn(props) {
     const followUrl = `follow/${props.username}`;
     const [follow, setFollow] = React.useState(null);
@@ -226,13 +228,14 @@ const UseFetchPage =(url) => {
 
 }
 
+// Users should be able to click a button or link on any post to toggle whether or not they “like” that post.
 function LikeBtn ({ authenticated, id }) {
     const [liked, setLiked] = React.useState(false)
     const [likeNum, setLikeNum] = React.useState(0);
     const url = `like/${id}`
 
+// asynchronously let the server know to update the like count (as via a call to fetch) and then update the post’s like count displayed on the page, without requiring a reload of the entire page.
     function changeLike() {
-        //setLiked(!liked)
         fetch(url, {
             method: "POST"
         })
@@ -293,6 +296,8 @@ function LikeBtn ({ authenticated, id }) {
     )
 }
 
+//Each post should include the username of the poster, the post content itself, the date and time at which the post was made, and the number of “likes” the post has 
+// Users should be able to click an “Edit” button or link on any of their own posts to edit that post.
 function PostDisplay ({ item, changePage, username }) {
     const [editDisplay, setEditDisplay] = React.useState(false);
     const [contentDisplay, setContentDisplay] = React.useState(item.content)
@@ -318,6 +323,7 @@ function PostDisplay ({ item, changePage, username }) {
         }
     }
 
+    //Clicking on a username should load that user’s profile page.
     function userProfile(event) {
         changePage({
             'filter': event.currentTarget.dataset.filter,
@@ -329,6 +335,7 @@ function PostDisplay ({ item, changePage, username }) {
         }, "", `${event.currentTarget.dataset.filter}=1`)
     }
 
+// The user should then be able to “Save” the edited post. Using JavaScript, you should be able to achieve this without requiring a reload of the entire page.
     function handleEditSubmit(event) {
         event.preventDefault();
 
@@ -361,6 +368,7 @@ function PostDisplay ({ item, changePage, username }) {
 
     }
 
+    //When a user clicks “Edit” for one of their own posts, the content of their post should be replaced with a textarea where the user can edit the content of their post.
     function ContentDisplay() {
         if (editDisplay) {
             return (
@@ -406,6 +414,9 @@ function PostDisplay ({ item, changePage, username }) {
     )
 }
 
+// The “Following” link in the navigation bar should take the user to a page where they see all posts made by users that the current user follows.
+//The “All Posts” link in the navigation bar should take the user to a page where they can see all posts from all users, with the most recent posts first.
+// Display all of the posts for that user, in reverse chronological order.
 function FetchPage(props) {
     let url = `page/${props.filter}/${props.page}`
     const pageList = UseFetchPage(url);
@@ -476,6 +487,8 @@ function Pagination(props) {
 
     }
 
+    /*f there are more than ten posts, a “Next” button should appear to take the user to the next page of posts.
+    If not on the first page, a “Previous” button should appear to take the user to the previous page of posts as well.*/ 
     function PrevNextBtn({ name, show }) {
         if (show) {
             return (
@@ -558,6 +571,7 @@ function NewPostBtn(props) {
             props.setShow('hide');
         }
     }
+    //Users who are signed in should be able to write a new text-based post by filling in text into a text area and then clicking a button to submit the post.
 
     return (<>
         <div 
