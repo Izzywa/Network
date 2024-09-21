@@ -1,0 +1,106 @@
+{% extends "network/layout.html" %}
+{% load static%}
+
+{% block body %}
+
+<script type="text/babel" src="{% static 'network/show-post.js' %}"></script>
+<script type="text/babel">
+    
+    function App() {
+        const [page, setPage] = React.useState({
+            'filter': `{{filter}}`,
+            'page': {{page}}
+        
+        });
+
+        const [show, setShow] = React.useState('');
+
+        React.useEffect(() => {
+            window.addEventListener('popstate', (event) => {
+                if (event.state === null) {
+                    setPage({
+                        'filter': page.filter,
+                        'page': page.page
+                    })
+                } else {
+                    setPage({
+                        'filter': event.state.filter,
+                        'page': event.state.page
+                    })
+                }
+                setShow('');
+            })
+        }, [])
+
+        function changeFilter(event) {
+            const filter = event.currentTarget.dataset.filter;
+            const page = event.currentTarget.dataset.page
+            
+            setPage ({
+                'filter': filter,
+                'page': page
+            })
+
+            history.pushState({filter: filter, page: page}, "", `${filter}=${page}`)
+        }
+
+        function NavItem(props) {
+            return (
+                <li className="nav-item">
+                    <a className="nav-link page-toggle" data-filter={props.filter}
+                     onClick={changeFilter} data-page="1" 
+                     id={props.filter === 'all'|| props.filter === 'following' ? props.filter:'username'}>
+                        <span className={page.filter === props.filter? 'active': 'inactive'}>{props.display}</span>
+                    </a>
+                </li>
+            )
+        }
+
+        let authenticated = false;
+
+        {% if user.is_authenticated %}
+            let username = `{{user.username}}`;
+            authenticated = true;
+        {% endif %}
+
+        return (
+            <>
+            <nav className="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
+                <NewPostBtn setShow={setShow} show={show} authenticated={authenticated}/>
+            
+                <div>
+                  <ul className="navbar-nav mr-auto ml-auto">
+                    {% if user.is_authenticated %}
+                        <NavItem filter={username} display={username} />
+                    {% endif %}
+
+                    <NavItem filter='all' display='All Posts'/>
+                    {% if user.is_authenticated %}
+                        <NavItem filter='following' display='Following'/>
+                        <li className="nav-item">
+                            <a className="nav-link" href="{% url 'logout' %}"><span>Log Out</span></a>
+                        </li>
+                    {% else %}
+                        <li className="nav-item">
+                            <a className="nav-link" href="{% url 'login' %}"><span>Log In</span></a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="{% url 'register' %}"><span>Register</span></a>
+                        </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </nav>
+              <LoadPost filter={page.filter} page={page.page} changePage={setPage} username={authenticated ? username:authenticated}/>
+              {% if user.is_authenticated%}
+                <NewPost show={show} setShow={setShow}/>
+              {% endif %}
+              </>
+        )
+    }
+
+    const AppDiv = ReactDOM.createRoot(document.querySelector('#App'));
+    AppDiv.render(<App />);
+
+</script>
+{% endblock %}

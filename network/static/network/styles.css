@@ -1,0 +1,219 @@
+.submit-btn, #new-post-btn {
+  border: none;
+  border-radius: 25px;
+  height: 2em;
+  width: 10em;
+  position: relative;
+  z-index: 1;
+  margin: 3px;
+  transition: 0.4s;
+  background-color: whitesmoke;
+  color: black;
+  outline: none;
+}
+
+.edit-btn {
+  border: none;
+  border-radius: 25px;
+  height: 1.8em;
+  width: 5em;
+  position: relative;
+  z-index: 1;
+  margin: 1px;
+  transition: 0.4s;
+  background-color: black;
+  color: whitesmoke;
+  outline: none;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.title span {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 2.5em;
+  font-weight: bold;
+}
+
+*:focus {
+  outline: none;
+}
+
+#new-post-btn:hover, .submit-btn:hover {
+  background-color: black;
+  color: whitesmoke;
+  letter-spacing: 2px;
+}
+
+#new-post-div, .submit-btn, .title, .brand, #new-post-btn {
+  justify-content: center;
+  align-items: center;
+}
+
+#username span {
+  border-bottom: 2px solid blue;
+}
+
+.nav-link span {
+  color: black;
+  transition: 0.3s;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+.nav-link span.active {
+  color: blue;
+}
+
+.nav-link span:hover {
+  color: blue;
+  letter-spacing: 2px;
+}
+
+.brand {
+  border-radius: 25px;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+.brand::before {
+  content: "";
+  display: block;
+  height: 50%;
+  width: 110%;
+  background-color: blue;
+  position: absolute;
+  z-index: 0;
+  animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.title {
+  display: flex;
+}
+.title span {
+  word-wrap: break-word;
+}
+
+body {
+  background-color: black;
+  min-height: 100vh;
+  color: whitesmoke;
+}
+
+.submit-btn {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}
+
+.card {
+  color: black;
+}
+
+select, .page-item > button, select > option {
+  font-family: "Courier New", Courier, monospace;
+  color: black;
+  font-size: 1em;
+  font-weight: bold;
+  height: 2.5em;
+}
+
+select {
+  padding-left: 0.8em;
+  padding-right: 0.5em;
+  border-radius: 4px;
+}
+
+#new-post-div {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  z-index: 3;
+  transition: width 0.5s linear;
+  width: 100vw;
+  padding-top: 5em;
+  display: none;
+}
+#new-post-div #new-post-container {
+  background-color: black;
+  border-left: 2px solid blue;
+}
+#new-post-div.show {
+  animation: slideRight 0.5s forwards;
+  display: block;
+}
+#new-post-div.hide {
+  animation: slideLeft 0.4s forwards;
+  display: block;
+}
+
+@keyframes slideLeft {
+  from {
+    left: 0;
+  }
+  to {
+    left: -100vw;
+  }
+}
+@keyframes slideRight {
+  from {
+    left: -100vw;
+  }
+  to {
+    left: 0;
+  }
+}
+.fa-arrow-left {
+  color: whitesmoke;
+}
+
+#new-post-back-btn {
+  cursor: pointer;
+}
+
+#post-alert {
+  animation: slidein 2s forwards;
+  transition: all ease-in-out;
+}
+
+@keyframes slidein {
+  0% {
+    transform: scaleY(0);
+  }
+  5% {
+    transform: scaleY(1);
+  }
+  90% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+  }
+}
+.follow {
+  font-family: "Courier New", Courier, monospace;
+}
+
+/*    animation-name: changeColor;
+    animation-duration: 2s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards; */
+.like-btn {
+  font-size: small;
+  position: relative;
+  color: black;
+}
+.like-btn.liked {
+  color: red;
+}
+
+.content-text {
+  white-space: pre-line;
+}
+
+/*# sourceMappingURL=styles.css.map */
