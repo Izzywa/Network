@@ -1,5 +1,8 @@
 name: Test
-on: push
+on: 
+  push:
+    branches:
+    - main
 
 jobs:
     test_network_app:
