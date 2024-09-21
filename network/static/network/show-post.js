@@ -225,7 +225,6 @@ const UseFetchPage =(url) => {
     }, [url]);
 
     return pageList;
-
 }
 
 // Users should be able to click a button or link on any post to toggle whether or not they “like” that post.
